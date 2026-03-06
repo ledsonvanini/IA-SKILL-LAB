@@ -18,11 +18,24 @@ Sistema modular de gerenciamento de promoções para rede de supermercados com 3
 **Decisões arquiteturais principais:**
 - Vertical Slice Architecture para isolamento de módulos
 - Hexagonal Architecture (Ports & Adapters) para desacoplamento de infraestrutura
-- CQRS Lite para separação read/write
-- Edge-first rendering para performance global
-- Cadastro incremental de produtos para otimização de storage
 
----
+### 📅 Importante: Timeline de Promoções (não é um calendário literal)
+
+**Conceito:**  
+O sistema gerencia promoções através de **períodos de validade** (data DE → data ATÉ), não é um calendário tradicional tipo Google Calendar com grid de dias.
+
+**Visualizações por perfil:**
+
+| Perfil | Visualização | Objetivo |
+|--------|--------------|----------|
+| **Admin/Gerente** | Timeline com histórico granular | Filtrar por ano/mês específico para auditoria, evidência jurídica e análise de campanhas passadas |
+| **Cliente Final** | Lista de promoções ATIVAS | Ver apenas ofertas vigentes (válidas hoje), sem histórico ou navegação por datas |
+
+**Componentes:**
+- `PromotionTimeline.tsx`: Exibe promoções em ordem cronológica com agrupamento por período
+- `PromotionHistoryFilter.tsx`: Filtros de período (ano/mês) exclusivos para admin
+- `ActivePromotionsGrid.tsx`: Landing page pública mostrando apenas promoções onde `validFrom <= hoje <= validUntil`
+
 
 ## 1. Visão Geral da Arquitetura
 
@@ -31,7 +44,7 @@ Sistema modular de gerenciamento de promoções para rede de supermercados com 3
 │                        PRESENTATION LAYER                        │
 │  ┌────────────────┐  ┌────────────────┐  ┌──────────────────┐  │
 │  │   Next.js App  │  │  Admin UI      │  │  Public Landing  │  │
-│  │   Router       │  │  (Calendário)  │  │  (Link único)    │  │
+│  │   Router       │  │  (Timeline)    │  │  (Link único)    │  │
 │  └────────────────┘  └────────────────┘  └──────────────────┘  │
 └───────────────────────────────┬─────────────────────────────────┘
                                 │
@@ -79,12 +92,11 @@ src/
 │   │   │   │   ├── Promotion.ts       # Entity principal
 │   │   │   │   └── Product.ts         # Value Object
 │   │   │   ├── value-objects/
-│   │   │   │   ├── DateRange.ts
-│   │   │   │   ├── Price.ts
+│  PromotionTimeline.tsx               │
+│  (Nova promoção visível na timeline) │
 │   │   │   │   └── PromotionStatus.ts
 │   │   │   └── repositories/
 │   │   │       └── IPromotionRepository.ts  # Interface (Port)
-│   │   │
 │   │   ├── application/
 │   │   │   ├── use-cases/
 │   │   │   │   ├── CreatePromotionUseCase.ts
@@ -111,8 +123,8 @@ src/
 │   │       ├── components/
 │   │       │   ├── PromotionForm.tsx
 │   │       │   ├── PromotionCard.tsx
-│   │       │   ├── PromotionCalendar.tsx
-│   │       │   └── PromotionTimeline.tsx
+│   │       │   ├── PromotionTimeline.tsx
+│   │       │   └── PromotionHistoryFilter.tsx
 │   │       ├── hooks/
 │   │       │   ├── useCreatePromotion.ts
 │   │       │   └── usePromotionList.ts
@@ -991,12 +1003,7 @@ export class CreatePromotionUseCase {
 ## 9. Roadmap de Evolução
 
 ### Fase 1: MVP (Meses 1-2)
-- ✅ CRUD de promoções
-- ✅ Upload e compressão de imagens
-- ✅ Calendário visual
-- ✅ Likes anônimos
-- ✅ Auth Google
-- ✅ Landing page pública
+ ✅ Timeline de promoções por período
 
 ### Fase 2: Analytics (Mês 3)
 - 📊 Dashboard de engagamento

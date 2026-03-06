@@ -23,7 +23,7 @@ ciclo_sprint: 2 semanas
 Rede de supermercados com 3 unidades possui processo manual ineficiente de comunicação de promoções via WhatsApp em múltiplos grupos, sem rastreabilidade, governança ou analytics de engajamento.
 
 ### 💡 Solução Proposta
-Sistema web centralizado tipo "calendário elegante" com link único compartilhável em redes sociais, permitindo gestão profissional de promoções com histórico completo, evidência jurídica de publicação e analytics de curtidas para identificar produtos de maior interesse.
+Sistema web centralizado com **timeline de promoções por período de validade** e link único compartilhável em redes sociais, permitindo gestão profissional de promoções com histórico completo (para admin/gerentes), landing page de promoções ativas (para clientes), evidência jurídica de publicação e analytics de curtidas para identificar produtos de maior interesse.
 
 ### 📊 Features Principais (MVP)
 
@@ -31,7 +31,7 @@ Sistema web centralizado tipo "calendário elegante" com link único compartilh�
 |---------|-----------|--------|--------|
 | CRUD de Promoções | P0 | Planejada | 1-2 |
 | Upload e Compressão de Imagens | P0 | Planejada | 2 |
-| Calendário Visual Admin | P0 | Planejada | 3 |
+| Timeline e Histórico de Promoções | P0 | Planejada | 3 |
 | Landing Page Pública (Link Único) | P0 | Planejada | 3 |
 | Curtidas Anônimas | P0 | Planejada | 4 |
 | Dashboard de Analytics | P1 | Planejada | 5 |
@@ -256,14 +256,13 @@ Expected: Erro "Preço promocional deve ser menor que o original"
 **Sprint:** 2
 
 **Descrição:**  
-Sistema deve exibir lista de promoções em formato de calendário visual com filtros.
+Sistema deve exibir timeline de promoções com filtros por período (ano/mês específico) e status. Visualização focada em histórico granular para gestão e auditoria.
+
+> **📌 Nota importante:** Esta funcionalidade é exclusiva para **Admin/Gerente**. Clientes finais NÃO têm acesso a navegação por período ou histórico — eles veem apenas promoções **ativas no momento** (RF-005).
 
 **Critérios de Aceite:**
-- [ ] View de calendário mensal (padrão)
-- [ ] View de lista (alternativa)
-- [ ] Filtros:
   - Status (rascunho, publicada, arquivada, expirada)
-  - Período (este mês, próximo mês, custom range)
+  - Período de validade (vigente agora, próximo mês, mês específico, intervalo customizado)
   - Unidade (todas, unidade específica)
   - Produto (busca por nome)
 - [ ] Cada card de promoção exibe:
@@ -340,10 +339,9 @@ Sistema deve permitir arquivamento soft delete de promoções.
 **Descrição:**  
 Landing page pública acessível via link único mostrando promoções válidas.
 
+> **📌 Importante:** Cliente final NÃO tem acesso a histórico ou navegação por datas. A landing page exibe **apenas promoções com status 'published' e data vigente** (`validFrom <= hoje <= validUntil`). Sem filtros de período, sem navegação temporal — foco total em ofertas atuais.
+
 **Critérios de Aceite:**
-- [ ] URL amigável: `promo.meta21.com.br`
-- [ ] Grid responsivo de cards de promoção
-- [ ] Cada card exibe:
   - Imagem principal
   - Título
   - Produto
@@ -752,11 +750,9 @@ sequenceDiagram
 ### 6.1 Checklist de MVP
 
 **Funcionalidades:**
-- [ ] CRUD completo de promoções funcional
-- [ ] Upload e compressão de imagens automatizado
-- [ ] Calendário visual no admin renderizando
-- [ ] Landing page pública acessível
-- [ ] Sistema de curtidas funcionando
+- [ ] Timeline de promoções com histórico por período
+- [ ] Filtro de período (ano/mês) funcionando
+- [ ] Landing page exibindo APENAS promoções vigentes (válidas hoje)
 - [ ] Autenticação Google OAuth ativa
 - [ ] Metadados de auditoria (created_by, published_at) salvos
 
