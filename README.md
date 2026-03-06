@@ -2,6 +2,17 @@
 ### SKILLS TOOLs Reference
 - **Anthropic SKILLs** [https://github.com/anthropics/skills/tree/main/](https://github.com/anthropics/skills/tree/main/)
 
+### Instalação local neste projeto
+- Repositório clonado em: `./skills`
+- Origem: [https://github.com/anthropics/skills/tree/main/](https://github.com/anthropics/skills/tree/main/)
+- Atualizar cópia local (sobrescreve pasta atual):
+
+```bash
+rm -rf skills
+git clone https://github.com/anthropics/skills.git skills
+rm -rf skills/.git
+```
+
 
 # 🧠 AI Specialist Knowledge Base: Skills, Workflows & Architecture
 > **Versão:** 1.0 (Março/2026)  
