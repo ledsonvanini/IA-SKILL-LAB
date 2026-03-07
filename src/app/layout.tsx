@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FontControlProvider } from "@/contexts/FontControlContext";
+import { CartProvider } from "@/contexts/CartContext";
+import { CartSidebar } from "@/components/shared/CartSidebar";
 import "./globals.css";
 
 const inter = Inter({
@@ -47,7 +49,10 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider>
           <FontControlProvider>
-            {children}
+            <CartProvider>
+              {children}
+              <CartSidebar />
+            </CartProvider>
           </FontControlProvider>
         </ThemeProvider>
       </body>
