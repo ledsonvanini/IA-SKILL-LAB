@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* =============================================
+   META21 DESIGN SYSTEM
+   Extraído dos protótipos em PLAN-META21/proto_page_meta21
+   Fonte de verdade para cores, tipografia e espaçamentos.
+   ============================================= */
+
+@theme inline {
+  /* ── Cores da Marca ── */
+  --color-primary: #b51c1c;
+  --color-primary-hover: #9a1818;
+  --color-primary-light: oklch(from #b51c1c l c h / 0.1);
+  --color-primary-shadow: oklch(from #b51c1c l c h / 0.2);
+
+  /* ── Backgrounds ── */
+  --color-bg-light: #f8f6f6;
+  --color-bg-dark: #201212;
+
+  /* ── Superfícies (cards, modais) ── */
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #18181b; /* zinc-900 */
+
+  /* ── Bordas ── */
+  --color-border-light: #e4e4e7; /* zinc-200 */
+  --color-border-dark: #27272a;  /* zinc-800 */
+
+  /* ── Texto ── */
+  --color-text-primary-light: #0f172a; /* slate-900 */
+  --color-text-primary-dark: #f1f5f9;  /* slate-100 */
+  --color-text-muted-light: #64748b;   /* slate-500 */
+  --color-text-muted-dark: #94a3b8;    /* slate-400 */
+
+  /* ── Status (badges, alertas) ── */
+  --color-success: #15803d;        /* green-700 */
+  --color-success-bg: #dcfce7;     /* green-100 */
+  --color-info: #1d4ed8;           /* blue-700 */
+  --color-info-bg: #dbeafe;        /* blue-100 */
+  --color-warning: #b45309;        /* amber-700 */
+  --color-warning-bg: #fef3c7;     /* amber-100 */
+  --color-danger: #b91c1c;         /* red-700 */
+  --color-danger-bg: #fee2e2;      /* red-100 */
+
+  /* ── WhatsApp ── */
+  --color-whatsapp: #25d366;
+
+  /* ── Tipografia ── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Radius ── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* ── Sombras ── */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ── Animações ── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+
+/* =============================================
+   FONT CONTROL — Acessibilidade (P / M / G)
+   Aplica font-size no :root para escalar via rem.
+   ============================================= */
+:root {
+  font-size: 16px; /* M (padrão) */
+}
+
+:root[data-font-size="small"] {
+  font-size: 14px; /* P */
+}
+
+:root[data-font-size="large"] {
+  font-size: 18px; /* G */
+}
+
+/* =============================================
+   DARK MODE — via classe .dark no <html>
+   ============================================= */
+:root {
+  --background: var(--color-bg-light);
+  --foreground: var(--color-text-primary-light);
+  --surface: var(--color-surface-light);
+  --border: var(--color-border-light);
+  --muted: var(--color-text-muted-light);
+  color-scheme: light;
+}
+
+.dark {
+  --background: var(--color-bg-dark);
+  --foreground: var(--color-text-primary-dark);
+  --surface: var(--color-surface-dark);
+  --border: var(--color-border-dark);
+  --muted: var(--color-text-muted-dark);
+  color-scheme: dark;
+}
+
+/* =============================================
+   BASE
+   ============================================= */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================
+   CSS-PARA-HUMANOS
+   Classes semânticas em pt-BR para identificação
+   no DevTools. NÃO possuem estilo — apenas semântica.
+   ============================================= */
+/* Estas classes são adicionadas aos componentes via className
+   para facilitar depuração visual no navegador:
+   .Página-Home, .Seção-Hero, .Card-Produto, .Botão-Adicionar, etc. */

@@ -1,6 +1,7 @@
 # Plano Arquitetural - Sistema de Gerenciamento de Promoções META21
 
 ## Metadados
+
 ```yaml
 versão: 1.0.0
 data_criação: 2026-03-06
@@ -16,6 +17,7 @@ padrão_arquitetural: Clean Architecture + Modular Monolith
 Sistema modular de gerenciamento de promoções para rede de supermercados com 3 unidades, seguindo Clean Architecture para garantir manutenibilidade, testabilidade e escalabilidade. Foco em operação simplificada por agência de publicidade e analytics de engajamento de clientes.
 
 **Decisões arquiteturais principais:**
+
 - Vertical Slice Architecture para isolamento de módulos
 - Hexagonal Architecture (Ports & Adapters) para desacoplamento de infraestrutura
 
@@ -32,10 +34,10 @@ O sistema gerencia promoções através de **períodos de validade** (data DE �
 | **Cliente Final** | Lista de promoções ATIVAS | Ver apenas ofertas vigentes (válidas hoje), sem histórico ou navegação por datas |
 
 **Componentes:**
+
 - `PromotionTimeline.tsx`: Exibe promoções em ordem cronológica com agrupamento por período
 - `PromotionHistoryFilter.tsx`: Filtros de período (ano/mês) exclusivos para admin
 - `ActivePromotionsGrid.tsx`: Landing page pública mostrando apenas promoções onde `validFrom <= hoje <= validUntil`
-
 
 ## 1. Visão Geral da Arquitetura
 
@@ -191,27 +193,74 @@ src/
 │   │       └── middleware/
 │   │           └── auth-middleware.ts
 │   │
-│   └── products/                      # Módulo de Produtos (Cadastro Incremental)
+│   ├── products/                      # Módulo de Produtos (CRUD Completo)
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── CatalogProduct.ts
+│   │   │   └── repositories/
+│   │   │       └── IProductRepository.ts
+│   │   │
+│   │   ├── application/
+│   │   │   └── use-cases/
+│   │   │       ├── CreateProductUseCase.ts
+│   │   │       ├── UpdateProductUseCase.ts
+│   │   │       ├── ListProductsUseCase.ts
+│   │   │       ├── AutoRegisterProductUseCase.ts
+│   │   │       ├── ImportProductsCsvUseCase.ts
+│   │   │       └── SearchProductUseCase.ts
+│   │   │
+│   │   ├── infrastructure/
+│   │   │   └── repositories/
+│   │   │       └── SupabaseProductRepository.ts
+│   │   │
+│   │   └── presentation/
+│   │       └── components/
+│   │           ├── ProductTable.tsx
+│   │           ├── ProductForm.tsx
+│   │           ├── ProductAutocomplete.tsx
+│   │           └── ProductBadge.tsx
+│   │
+│   └── ecommerce/                     # Módulo de E-commerce Simplificado (Fase 2)
 │       ├── domain/
 │       │   ├── entities/
-│       │   │   └── CatalogProduct.ts
+│       │   │   ├── Cart.ts
+│       │   │   ├── CartItem.ts
+│       │   │   ├── Order.ts
+│       │   │   └── Customer.ts
+│       │   ├── value-objects/
+│       │   │   ├── OrderStatus.ts
+│       │   │   └── CartTotal.ts
 │       │   └── repositories/
-│       │       └── IProductRepository.ts
+│       │       ├── ICartRepository.ts
+│       │       ├── IOrderRepository.ts
+│       │       └── ICustomerRepository.ts
 │       │
 │       ├── application/
 │       │   └── use-cases/
-│       │       ├── AutoRegisterProductUseCase.ts
-│       │       ├── SearchProductUseCase.ts
-│       │       └── SuggestProductNameUseCase.ts
+│       │       ├── AddToCartUseCase.ts
+│       │       ├── RemoveFromCartUseCase.ts
+│       │       ├── UpdateCartItemUseCase.ts
+│       │       ├── CreateOrderFromCartUseCase.ts
+│       │       ├── ListOrdersUseCase.ts
+│       │       ├── ReplicateOrderUseCase.ts
+│       │       └── GetCustomerProfileUseCase.ts
 │       │
 │       ├── infrastructure/
 │       │   └── repositories/
-│       │       └── SupabaseProductRepository.ts
+│       │       ├── SupabaseCartRepository.ts
+│       │       ├── SupabaseOrderRepository.ts
+│       │       └── SupabaseCustomerRepository.ts
 │       │
 │       └── presentation/
-│           └── components/
-│               ├── ProductAutocomplete.tsx
-│               └── ProductBadge.tsx
+│           ├── components/
+│           │   ├── CartSidebar.tsx
+│           │   ├── CartItem.tsx
+│           │   ├── ProductLightbox.tsx
+│           │   ├── OrderHistory.tsx
+│           │   └── CustomerProfile.tsx
+│           └── hooks/
+│               ├── useCart.ts
+│               └── useOrders.ts
 │
 ├── shared/                            # Código compartilhado
 │   ├── kernel/
@@ -240,9 +289,19 @@ src/
 │
 ├── app/                               # Next.js App Router (Thin Layer)
 │   ├── (public)/
-│   │   ├── page.tsx                   # Landing page pública
-│   │   └── promocoes/
-│   │       └── [id]/page.tsx
+│   │   ├── page.tsx                   # Home page pública
+│   │   ├── ofertas/
+│   │   │   └── page.tsx               # Landing page de ofertas
+│   │   ├── promocoes/
+│   │   │   └── [id]/page.tsx
+│   │   └── produtos/
+│   │       └── [slug]/page.tsx         # Detalhe produto (Fase 2)
+│   │
+│   ├── (customer)/                    # Área do cliente (Fase 2)
+│   │   ├── minha-conta/
+│   │   │   └── page.tsx               # Perfil + Endereços
+│   │   └── pedidos/
+│   │       └── page.tsx               # Histórico de pedidos
 │   │
 │   ├── (admin)/
 │   │   ├── dashboard/
@@ -251,13 +310,24 @@ src/
 │   │   │   ├── page.tsx
 │   │   │   ├── nova/page.tsx
 │   │   │   └── [id]/editar/page.tsx
-│   │   └── analytics/
+│   │   ├── produtos/
+│   │   │   ├── page.tsx               # Catálogo admin
+│   │   │   └── novo/page.tsx
+│   │   ├── analytics/
+│   │   │   └── page.tsx
+│   │   └── pedidos/                   # Gestão de pedidos admin (Fase 2)
 │   │       └── page.tsx
 │   │
 │   ├── api/
 │   │   ├── promotions/
 │   │   │   └── route.ts
+│   │   ├── products/
+│   │   │   └── route.ts
 │   │   ├── analytics/
+│   │   │   └── route.ts
+│   │   ├── cart/                          # Fase 2
+│   │   │   └── route.ts
+│   │   ├── orders/                        # Fase 2
 │   │   │   └── route.ts
 │   │   └── webhooks/
 │   │       └── supabase/route.ts
@@ -329,6 +399,7 @@ export class SupabasePromotionRepository implements IPromotionRepository {
 **Objetivo:** Abstrair persistência de dados.
 
 **Características:**
+
 - Repositories sempre retornam entidades de domínio
 - Mapeamento bidirecional (domain ↔ database)
 - Queries complexas encapsuladas
@@ -340,6 +411,7 @@ export class SupabasePromotionRepository implements IPromotionRepository {
 **Objetivo:** Separar comandos (write) de consultas (read).
 
 **Commands:**
+
 ```typescript
 // src/modules/promotions/application/use-cases/CreatePromotionUseCase.ts
 export class CreatePromotionUseCase {
@@ -375,6 +447,7 @@ export class CreatePromotionUseCase {
 ```
 
 **Queries (otimizadas):**
+
 ```typescript
 // src/modules/promotions/application/use-cases/ListPromotionsUseCase.ts
 export class ListPromotionsUseCase {
@@ -400,6 +473,7 @@ export class ListPromotionsUseCase {
 **Objetivo:** Inversão de controle para testabilidade.
 
 **Implementação (DI Container):**
+
 ```typescript
 // src/shared/infrastructure/di/container.ts
 import { Container } from 'inversify';
@@ -417,6 +491,7 @@ export { container };
 ```
 
 **Uso em API Routes:**
+
 ```typescript
 // app/api/promotions/route.ts
 import { container } from '@/shared/infrastructure/di/container';
@@ -467,6 +542,7 @@ export class Result<T> {
 ```
 
 **Uso:**
+
 ```typescript
 const result = await useCase.execute(dto);
 
@@ -645,6 +721,118 @@ BEGIN
   REFRESH MATERIALIZED VIEW CONCURRENTLY promotion_analytics;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================
+-- TABELAS FASE 2: E-COMMERCE SIMPLIFICADO
+-- ============================================
+
+-- Tabela de Clientes
+CREATE TABLE customers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  avatar_url TEXT,
+  
+  -- Endereço (simplificado)
+  address_street TEXT,
+  address_city VARCHAR(100),
+  address_state VARCHAR(2),
+  address_zip VARCHAR(10),
+  
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_customers_user ON customers (user_id);
+CREATE INDEX idx_customers_email ON customers (email);
+
+-- Tabela de Carrinhos
+CREATE TABLE carts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  
+  -- Identificação (anônimo ou logado)
+  customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
+  session_id VARCHAR(255),
+  
+  status VARCHAR(20) NOT NULL DEFAULT 'active',
+    CHECK (status IN ('active', 'abandoned', 'converted')),
+  
+  coupon_code VARCHAR(50),
+  
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  
+  CONSTRAINT cart_owner CHECK (
+    customer_id IS NOT NULL OR session_id IS NOT NULL
+  )
+);
+
+CREATE INDEX idx_carts_customer ON carts (customer_id);
+CREATE INDEX idx_carts_session ON carts (session_id);
+
+-- Tabela de Itens do Carrinho
+CREATE TABLE cart_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cart_id UUID NOT NULL REFERENCES carts(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  
+  quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0 AND quantity <= 99),
+  unit_price DECIMAL(10,2) NOT NULL,
+  
+  added_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_cart_items_cart ON cart_items (cart_id);
+CREATE UNIQUE INDEX idx_cart_items_unique ON cart_items (cart_id, product_id);
+
+-- Tabela de Pedidos
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_number VARCHAR(20) NOT NULL UNIQUE, -- ex: #MT-8742
+  
+  customer_id UUID NOT NULL REFERENCES customers(id),
+  unit_id UUID REFERENCES units(id),
+  
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    CHECK (status IN ('pending', 'confirmed', 'in_transit', 'delivered', 'cancelled')),
+  
+  subtotal DECIMAL(10,2) NOT NULL,
+  discount DECIMAL(10,2) DEFAULT 0,
+  total DECIMAL(10,2) NOT NULL,
+  
+  coupon_code VARCHAR(50),
+  notes TEXT,
+  
+  -- Via WhatsApp
+  whatsapp_sent BOOLEAN DEFAULT false,
+  whatsapp_sent_at TIMESTAMP WITH TIME ZONE,
+  
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  delivered_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_orders_customer ON orders (customer_id);
+CREATE INDEX idx_orders_status ON orders (status);
+CREATE INDEX idx_orders_created ON orders (created_at);
+CREATE INDEX idx_orders_number ON orders (order_number);
+
+-- Tabela de Itens do Pedido
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  
+  product_name VARCHAR(255) NOT NULL, -- Desnormalizado (snapshot do momento)
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  unit_price DECIMAL(10,2) NOT NULL,
+  total_price DECIMAL(10,2) GENERATED ALWAYS AS (quantity * unit_price) STORED
+);
+
+CREATE INDEX idx_order_items_order ON order_items (order_id);
 ```
 
 ---
@@ -719,12 +907,12 @@ $$ LANGUAGE plpgsql;
 ### 6.1 Pirâmide de Testes
 
 ```
-           ╱╲
-          ╱  ╲
-         ╱ E2E ╲          5% (Criação completa de promoção)
+           ╱  ╲
+          ╱    ╲
+         ╱ E2E  ╲          5% (Criação completa de promoção)
         ╱────────╲
        ╱          ╲
-      ╱Integration╲       25% (Use cases + Repository)
+      ╱Integration ╲       25% (Use cases + Repository)
      ╱──────────────╲
     ╱                ╲
    ╱      Unit        ╲    70% (Domain entities, Value Objects)
@@ -734,6 +922,7 @@ $$ LANGUAGE plpgsql;
 ### 6.2 Unit Tests (Domain Layer)
 
 **Exemplo:**
+
 ```typescript
 // tests/unit/modules/promotions/domain/entities/Promotion.spec.ts
 describe('Promotion Entity', () => {
@@ -987,6 +1176,7 @@ export class CreatePromotionUseCase {
 ### 8.3 Métricas de Sucesso
 
 **KPIs Técnicos:**
+
 - Time to First Byte (TTFB): < 600ms
 - Largest Contentful Paint (LCP): < 2.5s
 - First Input Delay (FID): < 100ms
@@ -994,6 +1184,7 @@ export class CreatePromotionUseCase {
 - Uptime: 99.9%
 
 **KPIs de Negócio:**
+
 - Tempo médio de criação de promoção: < 3 minutos
 - Taxa de erro em uploads: < 1%
 - Engagement rate (likes/views): baseline → tracking
@@ -1002,35 +1193,55 @@ export class CreatePromotionUseCase {
 
 ## 9. Roadmap de Evolução
 
-### Fase 1: MVP (Meses 1-2)
- ✅ Timeline de promoções por período
+### Fase 1: MVP — Promoções & Analytics (Sprints 1-5)
 
-### Fase 2: Analytics (Mês 3)
-- 📊 Dashboard de engagamento
-- 📈 Top produtos/promoções
-- 📧 Relatórios semanais por email
+- 🔐 Autenticação Google OAuth
+- 📦 CRUD de Promoções (criar, editar, arquivar, listar)
+- 🖼️ Upload e compressão de imagens
+- 📋 Catálogo de Produtos admin (CRUD completo)
+- 📅 Timeline de promoções com histórico por período
+- 🏠 Home Page pública + Landing de Ofertas
+- ❤️ Curtidas anônimas com contadores em tempo real
+- 📊 Dashboard de Analytics (engagement, top produtos)
+- 🏪 Multi-unidade (filtros por loja)
 
-### Fase 3: Otimização (Mês 4)
+### Fase 2: E-commerce Simplificado (Sprints 6-8)
+
+- 🔍 Detalhes do Produto (lightbox/modal)
+- 🛒 Carrinho de compras (sidebar)
+- 👤 Conta do Cliente (Minha Conta)
+- 📝 Histórico de Pedidos
+- 📩 Finalização via WhatsApp
+- 🎟️ Sistema de cupons de desconto
+
+### Fase 3: Otimização & Engajamento (Mês 5-6)
+
+- 💬 Sistema de Comentários Moderados
 - 🔍 Busca full-text de produtos
 - 🎨 Editor visual de banners
 - 📱 PWA (Progressive Web App)
+- 📧 Relatórios semanais por email
 
-### Fase 4: Escala (Mês 5+)
+### Fase 4: Escala (Mês 7+)
+
 - 🏪 Multi-tenant (outras redes)
 - 🔔 Notificações push
 - 🤖 Sugestões automáticas de promoções (IA)
-- 💳 Integração ERP/PDV
+- 💳 Integração com pagamento online (Mercado Pago/Stripe)
+- 🚚 Integração ERP/PDV
 
 ---
 
 ## 10. Referências de Implementação
 
 **Repositórios Exemplo:**
+
 - [Clean Architecture TS](https://github.com/stemmlerjs/ddd-forum)
 - [Modular Monolith](https://github.com/kgrzybek/modular-monolith-with-ddd)
 - [Next.js Commerce](https://github.com/vercel/commerce)
 
 **Documentação Oficial:**
+
 - [Next.js Image Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/images)
 - [Supabase Auth](https://supabase.com/docs/guides/auth)
 - [Supabase Storage](https://supabase.com/docs/guides/storage)

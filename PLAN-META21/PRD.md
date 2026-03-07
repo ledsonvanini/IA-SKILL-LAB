@@ -25,20 +25,31 @@ Rede de supermercados com 3 unidades possui processo manual ineficiente de comun
 ### 💡 Solução Proposta
 Sistema web centralizado com **timeline de promoções por período de validade** e link único compartilhável em redes sociais, permitindo gestão profissional de promoções com histórico completo (para admin/gerentes), landing page de promoções ativas (para clientes), evidência jurídica de publicação e analytics de curtidas para identificar produtos de maior interesse.
 
-### 📊 Features Principais (MVP)
+### 📊 Features Principais
+
+#### MVP (Fase 1 — Promoções & Analytics)
 
 | Feature | Prioridade | Status | Sprint |
 |---------|-----------|--------|--------|
+| Autenticação Google OAuth | P0 | Planejada | 1 |
 | CRUD de Promoções | P0 | Planejada | 1-2 |
 | Upload e Compressão de Imagens | P0 | Planejada | 2 |
+| Catálogo de Produtos Admin (CRUD) | P0 | Planejada | 2 |
 | Timeline e Histórico de Promoções | P0 | Planejada | 3 |
-| Landing Page Pública (Link Único) | P0 | Planejada | 3 |
+| Home Page Pública + Landing de Ofertas | P0 | Planejada | 3 |
 | Curtidas Anônimas | P0 | Planejada | 4 |
 | Dashboard de Analytics | P1 | Planejada | 5 |
-| Autenticação Google OAuth | P0 | Planejada | 1 |
-| Cadastro Incremental de Produtos | P1 | Planejada | 2 |
+| Multi-unidade (Filtros) | P1 | Planejada | 5 |
+
+#### Fase 2 — E-commerce Simplificado
+
+| Feature | Prioridade | Status | Sprint |
+|---------|-----------|--------|--------|
+| Detalhes do Produto (Lightbox) | P1 | Planejada | 6 |
+| Carrinho de Compras (Sidebar) | P1 | Planejada | 6-7 |
+| Conta do Cliente (Minha Conta) | P1 | Planejada | 7 |
+| Histórico de Pedidos | P1 | Planejada | 8 |
 | Sistema de Comentários Moderados | P2 | Backlog | - |
-| Multi-unidade (Filtros) | P1 | Backlog | - |
 
 **Legenda de Prioridades:**
 - **P0:** Blocker (não lança MVP sem isso)
@@ -52,7 +63,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 
 ### 1.1 Declaração de Visão
 
-> "Criar uma experiência digital elegante e eficiente para comunicação de promoções de supermercado, substituindo processos manuais por um sistema profissional com rastreabilidade jurídica e inteligência de engajamento."
+> "Criar uma experiência digital elegante e eficiente para comunicação de promoções e comercialização de produtos de supermercado, substituindo processos manuais por um sistema profissional com rastreabilidade jurídica, inteligência de engajamento e conveniência de compra para o cliente final."
 
 ### 1.2 Objetivos de Negócio
 
@@ -61,19 +72,22 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 2. Eliminar criação de grupos WhatsApp (de infinitos para 0)
 3. Atingir 70% de taxa de clique (CTR) no link único nas primeiras 4 semanas
 4. Gerar insights semanais sobre top 10 produtos mais curtidos
+5. Converter 10% dos visitantes da landing page em pedidos (Fase 2)
 
 **Qualitativos:**
 1. Melhorar percepção de profissionalismo da marca
 2. Reduzir atrito operacional da agência de publicidade
 3. Criar histórico auditável para compliance jurídico
+4. Oferecer conveniência de compra online simplificada (Fase 2)
 
-### 1.3 Não-Objetivos (Out of Scope - MVP)
+### 1.3 Não-Objetivos (Out of Scope)
 
-- ❌ E-commerce (compra online)
 - ❌ Programa de fidelidade
 - ❌ Integração com PDV/ERP
 - ❌ App mobile nativo (apenas PWA futuro)
-- ❌ Notificações push (Fase 2)
+- ❌ Notificações push (Fase 3)
+- ❌ Pagamento online integrado (Mercado Pago, Stripe — Fase 3)
+- ❌ Sistema de logística/entrega automatizada
 
 ---
 
@@ -330,40 +344,83 @@ Sistema deve permitir arquivamento soft delete de promoções.
 
 ---
 
-### 3.2 Módulo: Landing Page Pública
+### 3.2 Módulo: Páginas Públicas
 
-#### RF-005: Exibir Promoções Ativas (Link Único)
+#### RF-005: Home Page Pública (Vitrine de Produtos)
 **Prioridade:** P0  
 **Sprint:** 3
 
 **Descrição:**  
-Landing page pública acessível via link único mostrando promoções válidas.
-
-> **📌 Importante:** Cliente final NÃO tem acesso a histórico ou navegação por datas. A landing page exibe **apenas promoções com status 'published' e data vigente** (`validFrom <= hoje <= validUntil`). Sem filtros de período, sem navegação temporal — foco total em ofertas atuais.
+Página principal pública exibindo o catálogo de produtos do supermercado. Funciona como vitrine digital — o cliente pode navegar por categorias, buscar produtos e adicioná-los ao carrinho. Produtos que possuem promoção ativa exibem badge **"Ver Oferta"** que leva o cliente à página **Ofertas da Semana**.
 
 **Critérios de Aceite:**
+- [ ] Grid de cards de produtos com:
   - Imagem principal
-  - Título
-  - Produto
-  - Preço DE → POR (destaque no desconto)
-  - Validade ("Válido até DD/MM")
-  - Botão de curtir (coração)
-  - Contador de curtidas
-- [ ] Filtros:
-  - Todas as unidades (padrão)
-  - Unidade específica
-  - Produtos em destaque
-- [ ] Ordenação:
-  - Mais recentes (padrão)
-  - Maior desconto
-  - Mais curtidas
+  - Nome do produto
+  - Preço atual
+  - Badge "Ver Oferta" (se produto tem promoção ativa)
+  - Botão "Adicionar" → adiciona produto ao carrinho (abre sidebar lateral)
+- [ ] Header com:
+  - Logo META21
+  - Barra de busca (por nome do produto)
+  - Ícone do carrinho com badge de quantidade
+  - Seletor de unidade/loja
+- [ ] Filtros por categoria (Hortifrúti, Bebidas, Padaria, Carnes, etc.)
+- [ ] Seção hero/banner promocional (destaque da semana)
+- [ ] Link/botão "🔥 Ofertas da Semana" visível e destacado no topo
 - [ ] Mobile-first (maioria do tráfego)
 - [ ] Loading lazy para imagens
 
 **Regras de Negócio:**
-- RN-016: Apenas promoções com status 'published' aparecem
-- RN-017: Apenas promoções dentro do período de validade aparecem
-- RN-018: Cache de 5 minutos (ISR no Next.js)
+- RN-016: Badge "Ver Oferta" aparece apenas em produtos com promoção ativa (`validFrom <= hoje <= validUntil`)
+- RN-017: Botão "Adicionar" adiciona ao carrinho e abre sidebar lateral
+- RN-018: Produtos sem estoque exibem badge "Indisponível" (sem botão Adicionar)
+- RN-065: Clicar em "Ver Oferta" redireciona para `/ofertas` com filtro no produto
+
+**Performance:**
+- LCP < 2.5s
+- CLS < 0.1
+- Mobile PageSpeed > 90
+
+---
+
+#### RF-005b: Ofertas da Semana (Landing de Promoções)
+**Prioridade:** P0  
+**Sprint:** 3
+
+**Descrição:**  
+Página dedicada que exibe **exclusivamente promoções ativas com período de validade definido**. Cada oferta tem data de início e fim claramente visíveis. Acessível via link único compartilhável em redes sociais.
+
+> **📌 Importante:** Esta página exibe **apenas promoções com status 'published' e data vigente** (`validFrom <= hoje <= validUntil`). As datas devem ficar claras para o cliente — "Válido de DD/MM a DD/MM". Sem histórico, sem ofertas expiradas.
+
+**Critérios de Aceite:**
+- [ ] Header com título "🔥 Ofertas da Semana" + período visível (ex: "07/03 a 14/03")
+- [ ] Grid de cards de promoção com:
+  - Imagem principal da promoção
+  - Título da promoção
+  - Produto
+  - Preço DE → POR (destaque no desconto, % de economia)
+  - Validade claramente visível: "Válido de DD/MM a DD/MM"
+  - Botão de curtir (coração) + contador
+  - Botão "Adicionar ao Carrinho"
+- [ ] Filtros:
+  - Todas as unidades (padrão)
+  - Unidade específica
+  - Categoria do produto
+- [ ] Ordenação:
+  - Mais recentes (padrão)
+  - Maior desconto
+  - Mais curtidas
+- [ ] Link compartilhável único (para WhatsApp/Instagram)
+- [ ] Countdown visual para ofertas que expiram em < 24h
+- [ ] Mobile-first
+
+**Regras de Negócio:**
+- RN-057: Apenas promoções com status 'published' aparecem
+- RN-058: Apenas promoções dentro do período de validade aparecem
+- RN-059: Cache de 5 minutos (ISR no Next.js)
+- RN-060: Ofertas que expiram em < 24h ganham badge "🔥 Última chance!"
+- RN-061: Ao terminar o período, oferta desaparece automaticamente (sem ação manual)
 
 **Performance:**
 - LCP < 2.5s
@@ -522,38 +579,52 @@ Usuários admin fazem login via Google OAuth (Supabase Auth).
 
 ---
 
-### 3.5 Módulo: Produtos (Cadastro Incremental)
+### 3.5 Módulo: Catálogo de Produtos (Admin CRUD)
 
-#### RF-011: Auto-registro de Produto
-**Prioridade:** P1  
+#### RF-011: Gerenciamento de Produtos (CRUD Completo)
+**Prioridade:** P0  
 **Sprint:** 2
 
 **Descrição:**  
-Sistema cadastra produtos automaticamente quando usados pela primeira vez em promoção.
+Sistema permite o cadastro, edição, listagem e desativação de produtos pelo painel admin. O cadastro de produtos ocorre de duas formas: **incremental** (automaticamente quando usado em promoção) ou **importação em lote via CSV**.
 
 **Critérios de Aceite:**
-- [ ] Ao criar promoção, sistema checa se produto existe
-- [ ] Se não existe:
-  - Sistema cria registro na tabela products
-  - Sistema normaliza nome (lowercase, remove acentos)
-  - Sistema incrementa contador times_used
-- [ ] Se existe:
-  - Sistema apenas incrementa times_used
-  - Sistema atualiza last_used_at
+- [ ] Listagem de produtos com tabela:
+  - Imagem, Nome, SKU, Categoria, Status (Ativo/Sem Estoque/Rascunho), Preço, Ações
+- [ ] Filtros: categoria, status, busca por nome/SKU
+- [ ] Paginação (20 itens por página)
+- [ ] Cadastro individual via formulário:
+  - Nome (obrigatório), SKU (auto-gerado), Categoria (dropdown), Preço base, Imagem, Descrição
+- [ ] **Importação em lote via CSV:**
+  - Upload de arquivo `.csv` com colunas: nome, categoria, preço, sku (opcional), descrição
+  - Validação prévia com preview (linhas válidas / inválidas)
+  - Feedback de progresso (barra de progresso)
+  - Relatório pós-importação (X importados, Y ignorados, Z erros)
+  - Template CSV disponível para download
+- [ ] Auto-registro incremental ao criar promoção (se produto não existe, cria automaticamente)
+- [ ] Edição inline ou via formulário
+- [ ] Soft delete (desativar produto)
+- [ ] Normalização do nome para busca fuzzy (lowercase, remove acentos)
+- [ ] Contador times_used (quantas vezes usado em promoções)
 
 **Regras de Negócio:**
 - RN-036: Nome normalizado usado para busca fuzzy
 - RN-037: Produtos nunca são deletados (soft delete)
 - RN-038: Campo times_used usado para ranking de sugestões
+- RN-042: SKU gerado automaticamente com padrão `{CATEGORIA}-{ID_CURTO}`
+- RN-043: Produto sem estoque não aparece na home page pública
+- RN-062: CSV deve ter encoding UTF-8 e separador ponto-e-vírgula (padrão BR)
+- RN-063: Limite de 500 linhas por importação CSV
+- RN-064: Produtos duplicados (mesmo nome normalizado) são ignorados com aviso
 
 ---
 
 #### RF-012: Autocomplete de Produtos
-**Prioridade:** P1  
+**Prioridade:** P0  
 **Sprint:** 2
 
 **Descrição:**  
-Campo de produto no formulário sugere produtos já cadastrados.
+Campo de produto no formulário de promoções sugere produtos já cadastrados.
 
 **Critérios de Aceite:**
 - [ ] Input com debounce de 300ms
@@ -568,6 +639,137 @@ Campo de produto no formulário sugere produtos já cadastrados.
 - RN-039: Busca case-insensitive
 - RN-040: Busca por similaridade (Levenshtein distance)
 - RN-041: Cache de sugestões por 24h (Redis futuro)
+
+---
+
+### 3.6 Módulo: E-commerce Simplificado (Fase 2)
+
+> **📌 Nota:** Este módulo será implementado na Fase 2, após a consolidação do MVP de promoções. O objetivo é oferecer uma experiência simplificada de compra online — **não é um e-commerce completo** (sem integração com pagamento ou logística automatizada no momento). Funciona como uma "lista de compras" com possibilidade de finalização manual (WhatsApp / balcão).
+
+#### RF-013: Detalhes do Produto (Lightbox)
+**Prioridade:** P1  
+**Sprint:** 6
+
+**Descrição:**  
+Ao clicar em um produto (na landing page ou home), abre um lightbox/modal com detalhes completos do produto.
+
+**Critérios de Aceite:**
+- [ ] Modal/lightbox responsivo
+- [ ] Galeria de imagens com thumbnails laterais
+- [ ] Informações exibidas:
+  - Nome do produto
+  - Categoria / badge (ex: "NOVO", "+10.000 VENDIDOS")
+  - Preço DE → POR (com % desconto)
+  - Descrição detalhada
+  - Ficha técnica (marca, modelo, peso, etc.)
+  - Validade da oferta
+- [ ] Botão "Adicionar ao Carrinho"
+- [ ] Botão "Comprar Agora" (atalho → adiciona + abre carrinho)
+- [ ] Botão de fechar (X) e fechar clicando fora
+- [ ] URL amigável compartilhável `/produtos/[slug]`
+
+**Regras de Negócio:**
+- RN-044: Produtos sem estoque mostram badge "Indisponível" sem botão de compra
+- RN-045: Preço "DE" é exibido riscado apenas quando há desconto ativo
+- RN-046: SEO meta tags geradas dinamicamente para compartilhamento social
+
+---
+
+#### RF-014: Carrinho de Compras (Sidebar)
+**Prioridade:** P1  
+**Sprint:** 6-7
+
+**Descrição:**  
+Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar pedido" via WhatsApp ou retirada presencial.
+
+**Critérios de Aceite:**
+- [ ] Sidebar deslizante (abre pela direita)
+- [ ] Lista de itens com:
+  - Imagem thumbnail
+  - Nome + marca
+  - Preço unitário
+  - Controles de quantidade (+/-)
+  - Botão remover (🗑)
+- [ ] Campo de cupom de desconto (input + botão "Aplicar")
+- [ ] Resumo do pedido:
+  - Subtotal
+  - Frete (informativo: "Grátis" para retirada)
+  - Total
+- [ ] Botão "Finalizar Compra" → redireciona para WhatsApp com resumo do pedido
+- [ ] Botão "Continuar Comprando" → fecha sidebar
+- [ ] Badge no ícone de carrinho com quantidade de itens
+- [ ] Persistência local (localStorage) para não perder itens ao navegar
+
+**Regras de Negócio:**
+- RN-047: Carrinho persiste via localStorage (visitante anônimo) ou servidor (logado)
+- RN-048: Quantidade máxima por item: 99 unidades
+- RN-049: Carrinho vazio exibe empty state com CTA para ver ofertas
+- RN-050: "Finalizar Compra" gera mensagem formatada no WhatsApp com itens, quantidades e total
+
+**Fluxo de Finalização (WhatsApp):**
+```
+1. Cliente clica "Finalizar Compra"
+2. Sistema gera mensagem formatada:
+   "🛒 *Pedido META21*
+   • 1x Arroz 5kg — R$ 19,90
+   • 2x Leite 1L — R$ 9,68
+   ──────
+   *Total: R$ 29,58*
+   📍 Retirada na loja: [Unidade selecionada]"
+3. Sistema abre WhatsApp Web/App com mensagem pré-preenchida
+4. Cliente envia mensagem para número da unidade
+```
+
+---
+
+#### RF-015: Conta do Cliente (Minha Conta)
+**Prioridade:** P1  
+**Sprint:** 7
+
+**Descrição:**  
+Área logada para clientes com perfil pessoal, endereços e acesso ao histórico.
+
+**Critérios de Aceite:**
+- [ ] Login com Google OAuth (mesmo provider do admin, porém com role "customer")
+- [ ] Sidebar de navegação com:
+  - Meus Pedidos (ativo por padrão)
+  - Meu Perfil (nome, email, telefone)
+  - Endereços (cadastro de endereço para entregas futuras)
+  - Sair
+- [ ] Card "Precisa de ajuda?" com botão "Falar com Suporte"
+- [ ] Dados pessoais editáveis (nome, telefone)
+- [ ] Avatar vindo do Google OAuth
+
+**Regras de Negócio:**
+- RN-051: Clientes usam o mesmo OAuth mas role diferente (customer vs admin)
+- RN-052: Dados pessoais armazenados conforme LGPD (consentimento, direito ao esquecimento)
+- RN-053: Cliente pode excluir conta a qualquer momento
+
+---
+
+#### RF-016: Histórico de Pedidos
+**Prioridade:** P1  
+**Sprint:** 8
+
+**Descrição:**  
+Listagem de pedidos realizados pelo cliente com detalhes e status.
+
+**Critérios de Aceite:**
+- [ ] Tabela de pedidos com colunas:
+  - ID do Pedido (ex: #MT-8742)
+  - Data
+  - Total (R$)
+  - Status (Entregue, Em Trânsito, Pendente, Cancelado)
+  - Ações (Replicar pedido, Excluir do histórico)
+- [ ] Filtros por período e status
+- [ ] Paginação (10 itens por página)
+- [ ] Botão "Replicar" → adiciona todos os itens do pedido ao carrinho
+- [ ] Aviso sobre exclusão: "dados permanecem nos sistemas fiscais"
+
+**Regras de Negócio:**
+- RN-054: Status do pedido atualizado manualmente pelo admin (sem integração logística)
+- RN-055: Pedidos com mais de 1 ano são automaticamente arquivados
+- RN-056: "Replicar pedido" verifica disponibilidade atual dos produtos
 
 ---
 
