@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meta21 Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b51c1c",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#201212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex flex-col bg-white dark:bg-background-dark border-r border-slate-200 dark:border-slate-800">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary size-10 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-none">Meta21</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Promotion CMS</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="text-sm">New Promotion</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-sm">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-sm">Analytics</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- Top Header -->
+<header class="flex items-center justify-between px-8 py-4 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold tracking-tight">Dashboard Overview</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50" placeholder="Search promotions..." type="text"/>
+</div>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+<div class="flex items-center gap-3">
+<div class="flex flex-col text-right">
+<span class="text-sm font-semibold">Alex Rivera</span>
+<span class="text-xs text-slate-500">Administrator</span>
+</div>
+<div class="size-10 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-800" data-alt="User profile picture of administrator" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBoLFsT8QMvWiz98jPrF5x7zKDjEGK8HN98aMMW_nlaI7uWITDrDuWDFEIxVyWYegLfXxBw0Xfn7KS4PUkxQ0fa9GpQXAZMNaqG2Y-JhZCkal9-i7QA3SfELXwsyX1eHtX1yue9k2gj3uxH313W_6t6SE9fgFn9Ksf915wPtK88Dm0Ed29whjR8GtcW00Hc5f_LzlUh18l_7FkalbFiebf61nlBVnd7GGAfXBVPBibyOpbVqQWVEueRe8EL9vsfe6k42jAOHXOPDf1y')"></div>
+</div>
+</div>
+</header>
+<div class="p-8 space-y-8">
+<!-- Metrics Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-white dark:bg-background-dark p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Active Promotions</span>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">128</span>
+<span class="text-green-600 text-sm font-semibold pb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> 12%
+                            </span>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Weekly Likes</span>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">45.2k</span>
+<span class="text-red-600 text-sm font-semibold pb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">arrow_downward</span> 5%
+                            </span>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Weekly Views</span>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">1.2M</span>
+<span class="text-green-600 text-sm font-semibold pb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> 18%
+                            </span>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium">Avg Engagement</span>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">query_stats</span>
+</div>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-3xl font-bold">4.8%</span>
+<span class="text-green-600 text-sm font-semibold pb-1 flex items-center">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> 0.4%
+                            </span>
+</div>
+</div>
+</section>
+<!-- Promotion Timeline List -->
+<section class="bg-white dark:bg-background-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+<h3 class="text-lg font-bold">Promotion Timeline</h3>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                            New Promotion
+                        </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 uppercase text-xs font-bold tracking-wider">
+<tr>
+<th class="px-6 py-4">Thumbnail</th>
+<th class="px-6 py-4">Promotion Title</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Launch Date</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Thumbnail for Summer Blast 2024 promotion" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBQ98OHwA5kRDrcuOAhtbmpR-vkB1Okk1xyHMM_ESyGQpFvkHuJc0H-MoFUjpDaSB14OLfZL9cZL4-tbzo7xSNtHdtD_1WKRXclVL90MojQcMroSKHYlAit4EdjgYb0cZhiFYmY7e_EQk0YWj2j84DSRoto1XstD6qGvx5U_1eSSMWopkE10R9nuF7vu7I4Pi35KrZfj4raAB9WQks7VSioo36QCoTo8lNHxWB8K3kywPrbVtgx_s9FBXxmpJTQqTJ96H4e9H7thjBl')"></div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold">Summer Blast 2024</span>
+<span class="text-xs text-slate-500">Retail / Seasonal</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                            Published
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">Oct 24, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg transition-colors" title="Archive">
+<span class="material-symbols-outlined">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Thumbnail for Autumn Arrivals promotion" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPfMFiFl_0-kMe1B1TlsVjGOfaKpxIDLG6nALO334vuollNIJPU_h4c3rpzZUyqzbDnbpFrjNYyZliZEqo35PzasuE0XoL3nIDPB6C1BjJx9Kgz9eBJk4VtxnsbwzkdZoqXVilu5eoVIAe1MDUADxEV513IwlePx-npNb9SBQRNmmCc2UZXbYzwX4MoynnK9_48X3-GMKwB1OLdqDhMQyzgjchqQzP_krjeVje4v9N9bXkHo15OAjnsBM6EC-6EYnl3kCXkBkK2xdL')"></div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold">Autumn Arrivals</span>
+<span class="text-xs text-slate-500">Inventory / Apparel</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                            Draft
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">Oct 26, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg transition-colors" title="Archive">
+<span class="material-symbols-outlined">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Thumbnail for Midnight Madness promotion" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBBdUilVjnlz7a2QAxyvpjLNIhixMQliR0Yl35TBof-c7cFfzqg0NFQ4zmcKL8Brap26E1pnhTAVsW-OUSTLK2TCrpLOmT09T8iPrRJ2lUuLKEgivO9qzKDCVov4YOWPQ1J_MgV-TFHajm2OLkxEOCygnBd6hqSNefRQ5YIh7F9SnCsNEWLmdeAZShdntiFnjRh8yjFT4y0X4_wzTpzjwLjqdOMnX18Iv8sFwDBTj5QPtSHNqWfKLDy5l2eYQ-vyUinTJ9eRT4aENjd')"></div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold">Midnight Madness</span>
+<span class="text-xs text-slate-500">Flash Sale / Holiday</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                                            Expired
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">Oct 20, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg transition-colors" title="Archive">
+<span class="material-symbols-outlined">unarchive</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-lg bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Thumbnail for Winter Warmers promotion" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4497ENZOlvYExOZhroldgGQKxLe_n63J2bwDHKEObZT1fenh1I8kSJKbJ2ItWsBkp-sizmk12Nwwhd3_XudC9gCYGlqPesoFpLl2md2jhjuo23yObfZqAEGUcW_5qNIIh3BWDaiCkqdJGxyUmjlTRTDSDCKPaEVLpwXbaL6ljM4R0r7LJKbDuLOoXWoiLHk4nMxK7aKNjRLVEwtzAp2xxQGfRRKFqV9jGPzlPS1rXjTOz19sEsNCJdaAJV8hhqsXI9hp6X7Klg353')"></div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold">Winter Warmers</span>
+<span class="text-xs text-slate-500">Launch / New Line</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                            Published
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">Nov 02, 2023</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg transition-colors" title="Archive">
+<span class="material-symbols-outlined">archive</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+<p class="text-sm text-slate-500">Showing 1 to 4 of 128 entries</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Previous</button>
+<button class="px-3 py-1 bg-primary text-white rounded-lg text-sm font-semibold">1</button>
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">2</button>
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Next</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

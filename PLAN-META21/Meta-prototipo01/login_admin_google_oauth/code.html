@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - Meta21 Promotion System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b51c1c",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#201212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .geometric-bg {
+            background-color: #f8f6f6;
+            background-image: radial-gradient(#b51c1c11 1px, transparent 1px), radial-gradient(#b51c1c11 1px, #f8f6f6 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
+<div class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-hidden geometric-bg">
+<header class="flex items-center justify-between px-6 py-4 lg:px-12">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl font-bold">shield_person</span>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">Meta21</h2>
+</div>
+<div class="hidden md:flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>Secure Environment</span>
+</div>
+</header>
+<main class="flex-1 flex items-center justify-center p-4">
+<div class="w-full max-w-[440px] bg-white dark:bg-slate-900/50 backdrop-blur-sm p-8 rounded-xl shadow-2xl border border-primary/10 flex flex-col items-center">
+<div class="mb-8 flex flex-col items-center text-center">
+<div class="size-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-5xl">verified_user</span>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-bold tracking-tight mb-2">Meta21</h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg">Access the management panel</p>
+</div>
+<div class="w-full space-y-4">
+<button class="w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-6 bg-primary text-white gap-3 transition-all hover:bg-primary/90 active:scale-[0.98] shadow-lg shadow-primary/20">
+<div class="bg-white rounded-sm p-0.5 flex items-center justify-center">
+<svg class="size-5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+</div>
+<span class="text-base font-bold tracking-wide">Login with Google</span>
+</button>
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center">
+<span class="w-full border-t border-slate-200 dark:border-slate-800"></span>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-white dark:bg-slate-900 px-2 text-slate-500">Authorized Personnel Only</span>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center space-y-4">
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-[280px]">
+                        Secure login powered by Google Identity Services for the Meta21 promotion system.
+                    </p>
+<div class="flex items-center justify-center gap-1.5 text-primary/70 text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span>Enterprise Grade Security</span>
+</div>
+</div>
+</div>
+</main>
+<footer class="px-6 py-6 text-center">
+<p class="text-slate-400 text-xs">
+                © 2024 Meta21 Systems. All rights reserved. 
+                <a class="underline hover:text-primary transition-colors ml-2" href="#">Privacy Policy</a>
+<a class="underline hover:text-primary transition-colors ml-2" href="#">Terms of Service</a>
+</p>
+</footer>
+<div class="absolute -bottom-24 -left-24 size-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute -top-24 -right-24 size-64 bg-primary/5 rounded-full blur-3xl"></div>
+</div>
+</body></html>
