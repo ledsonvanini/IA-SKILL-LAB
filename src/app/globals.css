@@ -14,7 +14,7 @@
   --color-primary-shadow: oklch(from #b51c1c l c h / 0.2);
 
   /* ── Backgrounds ── */
-  --color-bg-light: #fafafa;
+  --color-bg-light: #f1f3f5;
   --color-bg-dark: #0d1117;
 
   /* ── Superfícies (cards, modais) ── */

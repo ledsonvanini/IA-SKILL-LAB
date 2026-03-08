@@ -33,7 +33,7 @@ export function CartSidebar() {
       <aside
         className={`
           Carrinho-Sidebar fixed top-0 right-0 z-[70]
-          h-full w-full max-w-md
+          h-full w-[calc(100%-48px)] sm:w-full max-w-md
           bg-[var(--surface)] border-l border-[var(--border)]
           flex flex-col
           transform transition-transform duration-[var(--duration-normal)] ease-[var(--ease-out-expo)]

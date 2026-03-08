@@ -429,6 +429,40 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 
 ---
 
+#### RF-005c: Compartilhar Oferta (Share)
+**Prioridade:** P0  
+**Sprint:** 3  
+**Status:** Implementada (2026-03-08)
+
+**Descrição:**  
+Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link amigável para enviar a seus contatos via WhatsApp, redes sociais ou qualquer canal. O sistema utiliza a **Web Share API** no mobile (integração nativa com apps) e fallback de **clipboard** no desktop.
+
+**URL Amigável:**
+- Padrão: `/ofertas?meta={slug-do-produto}`
+- Exemplo: `/ofertas?meta=arroz-agulhinha-5kg`
+- Slug derivado do campo `product.slug` (sem acentos, lowercase, separado por hífens)
+- Prefixo `meta` reforça identidade da marca na URL compartilhada
+- Evolução futura: rota dinâmica `/ofertas/{slug}` quando houver página individual
+
+**Critérios de Aceite:**
+- [x] Botão com ícone `Share2` (Lucide) em `CompactOfferCard` e `FeaturedOfferCard`
+- [x] Mobile: aciona `navigator.share()` com título, texto e URL
+- [x] Desktop: copia URL para clipboard com feedback visual "Copiado!" (2s)
+- [x] URL gerada é válida e abre a página de ofertas
+- [x] Acessibilidade: `aria-label` descritivo por produto
+
+**Regras de Negócio:**
+- RN-066: URL usa slug do produto (campo `Product.slug`), sem IDs internos
+- RN-067: Texto de compartilhamento inclui nome do produto, % desconto e preço promocional
+- RN-068: Fallback gracioso — se Web Share API não disponível, usa clipboard; se clipboard falha, não gera erro
+
+**Arquivos de Implementação:**
+- `src/lib/share.ts` — Utilitário `shareOffer()` e `getOfferShareUrl()`
+- `src/modules/promotions/presentation/components/CompactOfferCard.tsx`
+- `src/modules/promotions/presentation/components/FeaturedOfferCard.tsx`
+
+---
+
 #### RF-006: Curtir Promoção
 **Prioridade:** P0  
 **Sprint:** 4

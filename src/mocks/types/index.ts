@@ -51,6 +51,7 @@ export interface Promotion {
   likes: number;
   views: number;
   isWeeklyOffer: boolean; // badge "Ver Oferta" → leva para /ofertas
+  isTopOffer: boolean;    // badge "TOP" — atribuído pelo Admin via painel
   imageUrl: string;
   createdAt: string;
 }

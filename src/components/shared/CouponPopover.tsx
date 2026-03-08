@@ -65,8 +65,8 @@ function CouponCard({ coupon }: { coupon: Coupon }) {
   };
 
   return (
-    <div className="Card-Cupom flex items-center gap-4 p-4 rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] hover:border-[var(--color-primary)]/60 transition-colors">
-      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white">
+    <div className="Card-Cupom flex items-center gap-3 p-3 rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] hover:border-[var(--color-primary)]/60 transition-colors">
+      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white">
         <Ticket size={20} />
       </div>
       <div className="flex-1 min-w-0">
@@ -111,7 +111,7 @@ export function CouponPopover({ isOpen, onClose }: CouponPopoverProps) {
           Aplicar Cupons de Desconto
         </Modal.Header>
 
-        <div className="p-5 border-b border-[var(--border)]">
+        <div className="p-3 sm:p-5 border-b border-[var(--border)]">
           <div className="flex gap-2">
             <Input
               placeholder="Digite o código do cupom"

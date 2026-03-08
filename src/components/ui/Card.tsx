@@ -1,4 +1,5 @@
 import type { ReactNode, ImgHTMLAttributes } from "react";
+import { formatBRL } from "@/lib/format";
 
 /* ── Container ── */
 interface CardProps {
@@ -87,8 +88,6 @@ interface CardPriceProps {
 }
 
 function CardPrice({ from, to, unit }: CardPriceProps) {
-  const formatBRL = (value: number) =>
-    value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   return (
     <div className="Card-Preço flex flex-col">

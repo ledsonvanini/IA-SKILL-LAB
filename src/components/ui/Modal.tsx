@@ -68,8 +68,8 @@ function ModalContent({
   return (
     <div
       className={`
-        Modal-Conteúdo fixed inset-4
-        sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
+        Modal-Conteúdo fixed inset-2 sm:inset-auto
+        sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
         z-[90] bg-[var(--surface)] rounded-2xl shadow-2xl
         border border-[var(--border)]
         flex flex-col overflow-hidden
@@ -93,12 +93,12 @@ interface ModalHeaderProps {
 
 function ModalHeader({ children, icon, onClose }: ModalHeaderProps) {
   return (
-    <div className="Modal-Cabeçalho flex items-center justify-between p-5 border-b border-[var(--border)]">
+    <div className="Modal-Cabeçalho flex items-center justify-between p-3 sm:p-5 border-b border-[var(--border)]">
       <div className="flex items-center gap-2">
         {icon && (
           <span className="text-[var(--color-primary)]">{icon}</span>
         )}
-        <h2 className="text-lg font-bold">{children}</h2>
+        <h2 className="text-base sm:text-lg font-bold">{children}</h2>
       </div>
       <button
         onClick={onClose}
@@ -120,7 +120,7 @@ interface ModalBodyProps {
 function ModalBody({ children, className = "" }: ModalBodyProps) {
   return (
     <div
-      className={`Modal-Corpo flex-1 overflow-y-auto scrollbar-styled p-5 ${className}`}
+      className={`Modal-Corpo flex-1 overflow-y-auto scrollbar-styled p-3 sm:p-5 ${className}`}
     >
       {children}
     </div>

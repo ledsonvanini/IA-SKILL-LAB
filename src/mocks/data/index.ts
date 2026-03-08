@@ -726,6 +726,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 142,
     views: 1580,
     isWeeklyOffer: true,
+    isTopOffer: true,
     imageUrl:
       "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 2 * 86400000).toISOString(),
@@ -744,6 +745,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 287,
     views: 3200,
     isWeeklyOffer: true,
+    isTopOffer: true,
     imageUrl:
       "https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 3 * 86400000).toISOString(),
@@ -762,6 +764,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 56,
     views: 890,
     isWeeklyOffer: false,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 1 * 86400000).toISOString(),
@@ -780,6 +783,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 198,
     views: 2100,
     isWeeklyOffer: true,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 4 * 86400000).toISOString(),
@@ -798,6 +802,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 73,
     views: 950,
     isWeeklyOffer: false,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 5 * 86400000).toISOString(),
@@ -816,6 +821,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 91,
     views: 1200,
     isWeeklyOffer: false,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 2 * 86400000).toISOString(),
@@ -834,6 +840,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 215,
     views: 2800,
     isWeeklyOffer: true,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 1 * 86400000).toISOString(),
@@ -852,6 +859,7 @@ export const PROMOTIONS: Promotion[] = [
     likes: 64,
     views: 780,
     isWeeklyOffer: false,
+    isTopOffer: false,
     imageUrl:
       "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=400&fit=crop",
     createdAt: new Date(now.getTime() - 3 * 86400000).toISOString(),
