@@ -19,7 +19,7 @@ export interface StoreUnit {
     weekdays: string;
     weekends: string;
   };
-  coordinates?: { lat: number; lng: number };
+  coordinates: { lat: number; lng: number };
 }
 
 export interface Product {

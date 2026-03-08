@@ -68,10 +68,13 @@ export function CartSidebar() {
                   key={item.productId}
                   className="Item-Carrinho flex gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--surface)]"
                 >
-                  <div className="w-16 h-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
-                    <div className="w-full h-full bg-[var(--color-primary-light)] flex items-center justify-center text-[var(--color-primary)] text-xs font-bold">
-                      {product.name.slice(0, 3)}
-                    </div>
+                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-100 dark:bg-zinc-800">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold truncate">{product.name}</p>
@@ -127,10 +130,16 @@ export function CartSidebar() {
                 {formatBRL(totalPrice)}
               </span>
             </div>
-            <Button variant="whatsapp" size="lg" className="w-full">
-              <MessageCircle size={18} />
-              Finalizar via WhatsApp
-            </Button>
+            <a
+              href="https://wa.me/5511987654321?text=Ol%C3%A1!%20Gostaria%20de%20finalizar%20meu%20pedido%20pelo%20Meta21."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="whatsapp" size="lg" className="w-full">
+                <MessageCircle size={18} />
+                Finalizar via WhatsApp
+              </Button>
+            </a>
             <button
               onClick={clearCart}
               className="w-full text-xs text-[var(--muted)] hover:text-[var(--color-danger)] transition-colors"

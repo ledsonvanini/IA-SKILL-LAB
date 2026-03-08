@@ -14,22 +14,22 @@
   --color-primary-shadow: oklch(from #b51c1c l c h / 0.2);
 
   /* ── Backgrounds ── */
-  --color-bg-light: #f8f6f6;
-  --color-bg-dark: #201212;
+  --color-bg-light: #fafafa;
+  --color-bg-dark: #0d1117;
 
   /* ── Superfícies (cards, modais) ── */
   --color-surface-light: #ffffff;
-  --color-surface-dark: #18181b; /* zinc-900 */
+  --color-surface-dark: #161b22;
 
   /* ── Bordas ── */
-  --color-border-light: #e4e4e7; /* zinc-200 */
-  --color-border-dark: #27272a;  /* zinc-800 */
+  --color-border-light: #e5e7eb; /* gray-200 */
+  --color-border-dark: #30363d;  /* GitHub dark border */
 
   /* ── Texto ── */
-  --color-text-primary-light: #0f172a; /* slate-900 */
-  --color-text-primary-dark: #f1f5f9;  /* slate-100 */
-  --color-text-muted-light: #64748b;   /* slate-500 */
-  --color-text-muted-dark: #94a3b8;    /* slate-400 */
+  --color-text-primary-light: #1f2328; /* GitHub text */
+  --color-text-primary-dark: #e6edf3;  /* GitHub dark text */
+  --color-text-muted-light: #636c76;   /* GitHub muted */
+  --color-text-muted-dark: #8b949e;    /* GitHub dark muted */
 
   /* ── Status (badges, alertas) ── */
   --color-success: #15803d;        /* green-700 */
@@ -108,12 +108,54 @@
 /* =============================================
    BASE
    ============================================= */
+html {
+  scroll-behavior: smooth;
+  font-size: 15px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cursor pointer em todos os interativos */
+button,
+a,
+[role="button"],
+select,
+label[for] {
+  cursor: pointer;
+}
+
+/* Scrollbar hide para carousels horizontais */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scrollbar estilizada para popovers e modais */
+.scrollbar-styled {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-styled::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar-styled::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-styled::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+.scrollbar-styled::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
 }
 
 /* =============================================
