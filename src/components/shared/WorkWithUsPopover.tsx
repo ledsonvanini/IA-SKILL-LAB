@@ -1,18 +1,49 @@
 "use client";
 
 import { useState } from "react";
-import { X, Briefcase, Send, User, Phone, Mail, FileText } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Briefcase, Send, User, Phone, Mail, FileText } from "lucide-react";
+import { Button, Input, Modal } from "@/components/ui";
 
 interface WorkWithUsPopoverProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function WorkWithUsPopover({ isOpen, onClose }: WorkWithUsPopoverProps) {
-  const [sent, setSent] = useState(false);
+function SuccessView({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="p-8 text-center">
+      <div className="w-16 h-16 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center mx-auto mb-4">
+        <Send size={28} className="text-[var(--color-primary)]" />
+      </div>
+      <h3 className="text-xl font-bold mb-2">Candidatura Enviada!</h3>
+      <p className="text-sm text-[var(--muted)] mb-6">
+        Obrigado pelo interesse. Analisaremos seu perfil e entraremos em
+        contato em breve.
+      </p>
+      <Button variant="primary" onClick={onClose}>
+        Fechar
+      </Button>
+    </div>
+  );
+}
 
-  if (!isOpen) return null;
+const AREA_OPTIONS = [
+  { value: "", label: "Selecione uma área" },
+  { value: "caixa", label: "Operador de Caixa" },
+  { value: "repositor", label: "Repositor" },
+  { value: "acougue", label: "Açougue" },
+  { value: "padaria", label: "Padaria" },
+  { value: "hortifruti", label: "Hortifruti" },
+  { value: "administrativo", label: "Administrativo" },
+  { value: "logistica", label: "Logística" },
+  { value: "outro", label: "Outro" },
+];
+
+export function WorkWithUsPopover({
+  isOpen,
+  onClose,
+}: WorkWithUsPopoverProps) {
+  const [sent, setSent] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,44 +51,15 @@ export function WorkWithUsPopover({ isOpen, onClose }: WorkWithUsPopoverProps) {
   };
 
   return (
-    <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[80]"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="Popover-TrabalheConosco fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 z-[90] bg-[var(--surface)] rounded-2xl shadow-2xl border border-[var(--border)] sm:w-[480px] sm:max-h-[600px] flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
-          <div className="flex items-center gap-2">
-            <Briefcase size={20} className="text-[var(--color-primary)]" />
-            <h2 className="text-lg font-bold">Trabalhe Conosco</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-lg"
-            aria-label="Fechar"
-          >
-            <X size={20} />
-          </button>
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal.Overlay onClose={onClose} />
+      <Modal.Content size="md">
+        <Modal.Header icon={<Briefcase size={20} />} onClose={onClose}>
+          Trabalhe Conosco
+        </Modal.Header>
 
         {sent ? (
-          <div className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center mx-auto mb-4">
-              <Send size={28} className="text-[var(--color-primary)]" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">
-              Candidatura Enviada!
-            </h3>
-            <p className="text-sm text-[var(--muted)] mb-6">
-              Obrigado pelo interesse. Analisaremos seu perfil e entraremos
-              em contato em breve.
-            </p>
-            <Button variant="primary" onClick={onClose}>
-              Fechar
-            </Button>
-          </div>
+          <SuccessView onClose={onClose} />
         ) : (
           <form
             onSubmit={handleSubmit}
@@ -67,94 +69,71 @@ export function WorkWithUsPopover({ isOpen, onClose }: WorkWithUsPopoverProps) {
               Faça parte do time Meta21! Preencha o formulário abaixo.
             </p>
 
-            <div>
-              <label
-                htmlFor="wku-name"
-                className="text-sm font-semibold text-[var(--foreground)] mb-1.5 flex items-center gap-1.5"
-              >
-                <User size={14} className="text-[var(--color-primary)]" />
-                Nome completo
-              </label>
-              <input
-                id="wku-name"
-                type="text"
-                required
-                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
-                placeholder="Seu nome"
-              />
-            </div>
+            <Input
+              label="Nome completo"
+              id="wku-name"
+              required
+              placeholder="Seu nome"
+              icon={<User size={14} />}
+            />
 
-            <div>
-              <label
-                htmlFor="wku-email"
-                className="text-sm font-semibold text-[var(--foreground)] mb-1.5 flex items-center gap-1.5"
-              >
-                <Mail size={14} className="text-[var(--color-primary)]" />
-                E-mail
-              </label>
-              <input
-                id="wku-email"
-                type="email"
-                required
-                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
-                placeholder="seu@email.com"
-              />
-            </div>
+            <Input
+              label="E-mail"
+              id="wku-email"
+              type="email"
+              required
+              placeholder="seu@email.com"
+              icon={<Mail size={14} />}
+            />
 
-            <div>
-              <label
-                htmlFor="wku-phone"
-                className="text-sm font-semibold text-[var(--foreground)] mb-1.5 flex items-center gap-1.5"
-              >
-                <Phone size={14} className="text-[var(--color-primary)]" />
-                Telefone
-              </label>
-              <input
-                id="wku-phone"
-                type="tel"
-                required
-                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
-                placeholder="(11) 99999-0000"
-              />
-            </div>
+            <Input
+              label="Telefone"
+              id="wku-phone"
+              type="tel"
+              required
+              placeholder="(11) 99999-0000"
+              icon={<Phone size={14} />}
+            />
 
-            <div>
+            <div className="Campo-Input flex flex-col gap-1.5">
               <label
                 htmlFor="wku-area"
-                className="text-sm font-semibold text-[var(--foreground)] mb-1.5 flex items-center gap-1.5"
+                className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-1.5"
               >
-                <Briefcase size={14} className="text-[var(--color-primary)]" />
+                <Briefcase
+                  size={14}
+                  className="text-[var(--color-primary)]"
+                />
                 Área de interesse
               </label>
               <select
                 id="wku-area"
                 required
-                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
+                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
               >
-                <option value="">Selecione uma área</option>
-                <option value="caixa">Operador de Caixa</option>
-                <option value="repositor">Repositor</option>
-                <option value="acougue">Açougue</option>
-                <option value="padaria">Padaria</option>
-                <option value="hortifruti">Hortifruti</option>
-                <option value="administrativo">Administrativo</option>
-                <option value="logistica">Logística</option>
-                <option value="outro">Outro</option>
+                {AREA_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div>
+            <div className="Campo-Input flex flex-col gap-1.5">
               <label
                 htmlFor="wku-message"
-                className="text-sm font-semibold text-[var(--foreground)] mb-1.5 flex items-center gap-1.5"
+                className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-1.5"
               >
-                <FileText size={14} className="text-[var(--color-primary)]" />
+                <FileText
+                  size={14}
+                  className="text-[var(--color-primary)]"
+                />
                 Por que quer trabalhar conosco?
               </label>
               <textarea
                 id="wku-message"
                 rows={3}
-                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)] resize-none"
+                className="block w-full px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)] resize-none"
                 placeholder="Conte um pouco sobre você..."
               />
             </div>
@@ -170,7 +149,7 @@ export function WorkWithUsPopover({ isOpen, onClose }: WorkWithUsPopoverProps) {
             </Button>
           </form>
         )}
-      </div>
-    </>
+      </Modal.Content>
+    </Modal>
   );
 }

@@ -178,7 +178,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex items-center gap-3">
             <div className="relative hidden sm:block">
               <input
-                className="w-48 md:w-64 pl-10 pr-4 py-2 bg-zinc-100 dark:bg-zinc-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)]/50 placeholder:text-[var(--muted)]"
+                className="w-48 md:w-64 pl-10 pr-4 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)]/50 placeholder:text-[var(--muted)]"
                 placeholder="Buscar promoções..."
                 type="text"
                 aria-label="Buscar no painel"

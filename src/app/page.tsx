@@ -17,7 +17,7 @@ import { PublicLayout } from "@/components/layout";
 import { Badge, Button } from "@/components/ui";
 import { CategoryCarousel } from "@/components/shared/CategoryCarousel";
 import { useTheme } from "@/contexts/ThemeContext";
-import { CATEGORIES } from "@/mocks/data";
+import { CATEGORIES, CATEGORY_COLORS } from "@/mocks/data";
 import type { LucideIcon } from "lucide-react";
 
 /* ── Mapa de ícones Lucide por categoria ── */
@@ -31,40 +31,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Sparkles,
   Croissant,
 };
-
-/* Cores dinâmicas: light = branco, dark = colorido */
-const LIGHT_COLORS = [
-  "bg-white text-amber-600 shadow-sm hover:shadow-md",
-  "bg-white text-red-600 shadow-sm hover:shadow-md",
-  "bg-white text-green-600 shadow-sm hover:shadow-md",
-  "bg-white text-purple-600 shadow-sm hover:shadow-md",
-  "bg-white text-blue-600 shadow-sm hover:shadow-md",
-  "bg-white text-cyan-600 shadow-sm hover:shadow-md",
-  "bg-white text-pink-600 shadow-sm hover:shadow-md",
-  "bg-white text-orange-600 shadow-sm hover:shadow-md",
-];
-
-const DARK_COLORS = [
-  "text-amber-400 shadow-none",
-  "text-red-400 shadow-none",
-  "text-green-400 shadow-none",
-  "text-purple-400 shadow-none",
-  "text-blue-400 shadow-none",
-  "text-cyan-400 shadow-none",
-  "text-pink-400 shadow-none",
-  "text-orange-400 shadow-none",
-];
-
-const DARK_BG = [
-  "rgba(120, 53, 15, 0.25)",
-  "rgba(127, 29, 29, 0.25)",
-  "rgba(20, 83, 45, 0.25)",
-  "rgba(59, 7, 100, 0.25)",
-  "rgba(30, 58, 138, 0.25)",
-  "rgba(22, 78, 99, 0.25)",
-  "rgba(131, 24, 67, 0.25)",
-  "rgba(124, 45, 18, 0.25)",
-];
 
 /* ── Banner Images (3 imagens com fade) ── */
 const HERO_IMAGES = [
@@ -158,9 +124,11 @@ function CategoriesSection() {
         Compre por Departamento
       </h2>
       <div className="flex flex-wrap justify-center gap-5 sm:gap-7">
-        {CATEGORIES.map((cat, i) => {
+        {CATEGORIES.map((cat) => {
           const Icon = ICON_MAP[cat.icon] ?? Wheat;
-          const colorClass = isDark ? DARK_COLORS[i] : LIGHT_COLORS[i];
+          const colors = CATEGORY_COLORS[cat.id];
+          const colorClass = isDark ? colors?.dark : colors?.light;
+
           return (
             <a
               key={cat.id}
@@ -169,7 +137,6 @@ function CategoriesSection() {
             >
               <div
                 className={`w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full flex items-center justify-center border border-[var(--border)] transition-all duration-300 group-hover:scale-110 group-hover:border-[var(--color-primary)] ${colorClass}`}
-                style={isDark ? { backgroundColor: DARK_BG[i] } : undefined}
               >
                 <Icon size={26} strokeWidth={1.8} />
               </div>

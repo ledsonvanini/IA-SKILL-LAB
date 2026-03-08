@@ -2,8 +2,9 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Card, Button } from "@/components/ui";
 import { useCart } from "@/contexts/CartContext";
+import { formatBRL } from "@/lib/format";
 import {
   getProductsByCategory,
   getPromotionForProduct,
@@ -17,8 +18,8 @@ interface CategoryCarouselProps {
   bannerPosition: "left" | "right";
 }
 
-const formatBRL = (value: number) =>
-  value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+/** Largura base do card para calcular scroll distance */
+const CARD_WIDTH_BASE = 200;
 
 export function CategoryCarousel({
   categoryId,
@@ -57,7 +58,7 @@ export function CategoryCarousel({
     const el = scrollRef.current;
     if (!el) return;
     el.scrollBy({
-      left: dir === "left" ? -240 : 240,
+      left: dir === "left" ? -CARD_WIDTH_BASE : CARD_WIDTH_BASE,
       behavior: "smooth",
     });
   };
@@ -115,7 +116,7 @@ export function CategoryCarousel({
             </button>
           )}
 
-          {/* Product cards — grid padronizado */}
+          {/* Product cards using Card compound */}
           <div
             ref={scrollRef}
             className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth py-1"
@@ -126,36 +127,29 @@ export function CategoryCarousel({
               const originalPrice = promo ? promo.originalPrice : undefined;
 
               return (
-                <div
+                <Card
                   key={product.id}
-                  className="Card-Produto-Carousel flex-shrink-0 w-[170px] sm:w-[190px] lg:w-[200px] bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden group hover:shadow-md hover:border-[var(--color-primary)]/20 transition-all flex flex-col"
+                  hover
+                  className="Card-Produto-Carousel flex-shrink-0 w-[170px] sm:w-[190px] lg:w-[200px] flex flex-col hover:border-[var(--color-primary)]/20"
                 >
-                  <div className="relative aspect-square overflow-hidden flex-shrink-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="p-3 sm:p-4 flex flex-col flex-1">
+                  <Card.Image
+                    src={product.imageUrl}
+                    alt={product.name}
+                    aspectRatio="square"
+                  />
+                  <Card.Body className="flex flex-col flex-1">
                     <h4 className="text-sm font-semibold text-[var(--foreground)] line-clamp-2 leading-snug mb-2 min-h-[2.6em]">
                       {product.name}
                     </h4>
                     <div className="mt-auto">
-                      {originalPrice && (
-                        <span className="text-[11px] text-[var(--muted)] line-through block">
-                          {formatBRL(originalPrice)}
-                        </span>
-                      )}
-                      <span className="text-lg sm:text-xl font-black text-[var(--color-primary)] block mb-3">
-                        {formatBRL(price)}
-                      </span>
+                      <Card.Price
+                        from={originalPrice}
+                        to={price}
+                      />
                       <Button
                         variant="primary"
                         size="sm"
-                        className="w-full text-xs"
+                        className="w-full text-xs mt-3"
                         onClick={() =>
                           addItem({
                             productId: product.id,
@@ -168,8 +162,8 @@ export function CategoryCarousel({
                         Comprar
                       </Button>
                     </div>
-                  </div>
-                </div>
+                  </Card.Body>
+                </Card>
               );
             })}
           </div>

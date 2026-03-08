@@ -12,6 +12,18 @@ export const CATEGORIES: Category[] = [
   { id: "cat-08", name: "Padaria", slug: "padaria", icon: "Croissant" },
 ];
 
+/* ── Cores semânticas por categoria (Tailwind-only, sem hardcode) ── */
+export const CATEGORY_COLORS: Record<string, { light: string; dark: string }> = {
+  "cat-01": { light: "bg-white text-amber-600 shadow-sm hover:shadow-md", dark: "text-amber-400 bg-amber-900/25" },
+  "cat-02": { light: "bg-white text-red-600 shadow-sm hover:shadow-md", dark: "text-red-400 bg-red-900/25" },
+  "cat-03": { light: "bg-white text-green-600 shadow-sm hover:shadow-md", dark: "text-green-400 bg-green-900/25" },
+  "cat-04": { light: "bg-white text-purple-600 shadow-sm hover:shadow-md", dark: "text-purple-400 bg-purple-900/25" },
+  "cat-05": { light: "bg-white text-blue-600 shadow-sm hover:shadow-md", dark: "text-blue-400 bg-blue-900/25" },
+  "cat-06": { light: "bg-white text-cyan-600 shadow-sm hover:shadow-md", dark: "text-cyan-400 bg-cyan-900/25" },
+  "cat-07": { light: "bg-white text-pink-600 shadow-sm hover:shadow-md", dark: "text-pink-400 bg-pink-900/25" },
+  "cat-08": { light: "bg-white text-orange-600 shadow-sm hover:shadow-md", dark: "text-orange-400 bg-orange-900/25" },
+};
+
 /* ── Imagens de banner vertical por categoria ── */
 export const CATEGORY_BANNERS: Record<string, string> = {
   "cat-01":

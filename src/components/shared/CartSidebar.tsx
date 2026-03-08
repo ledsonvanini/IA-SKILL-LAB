@@ -1,16 +1,22 @@
 "use client";
 
-import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingCart, MessageCircle } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { getProductById } from "@/mocks/data";
 import { Button } from "@/components/ui";
+import { formatBRL } from "@/lib/format";
 
 export function CartSidebar() {
-  const { items, totalItems, totalPrice, isOpen, closeCart, updateQuantity, removeItem, clearCart } =
-    useCart();
-
-  const formatBRL = (value: number) =>
-    value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    isOpen,
+    closeCart,
+    updateQuantity,
+    removeItem,
+    clearCart,
+  } = useCart();
 
   return (
     <>
@@ -56,7 +62,7 @@ export function CartSidebar() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-[var(--muted)] gap-3">
-              <span className="text-4xl">🛒</span>
+              <ShoppingCart size={40} strokeWidth={1.2} />
               <p className="text-sm">Seu carrinho está vazio</p>
             </div>
           ) : (
@@ -68,7 +74,7 @@ export function CartSidebar() {
                   key={item.productId}
                   className="Item-Carrinho flex gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--surface)]"
                 >
-                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-100 dark:bg-zinc-800">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--background)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={product.imageUrl}

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, Tag, Ticket, Copy, Check } from "lucide-react";
-import { Badge, Button } from "@/components/ui";
+import { Tag, Ticket, Copy, Check } from "lucide-react";
+import { Badge, Button, Input, Modal } from "@/components/ui";
 
 interface CouponPopoverProps {
   isOpen: boolean;
@@ -103,36 +103,18 @@ function CouponCard({ coupon }: { coupon: Coupon }) {
 }
 
 export function CouponPopover({ isOpen, onClose }: CouponPopoverProps) {
-  if (!isOpen) return null;
-
   return (
-    <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[80]"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="Popover-Cupons fixed inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 z-[90] bg-[var(--surface)] rounded-2xl shadow-2xl border border-[var(--border)] sm:w-[480px] sm:max-h-[560px] flex flex-col overflow-hidden">
-        <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
-          <div className="flex items-center gap-2">
-            <Tag size={20} className="text-[var(--color-primary)]" />
-            <h2 className="text-lg font-bold">Aplicar Cupons de Desconto</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors rounded-lg"
-            aria-label="Fechar"
-          >
-            <X size={20} />
-          </button>
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal.Overlay onClose={onClose} />
+      <Modal.Content size="md">
+        <Modal.Header icon={<Tag size={20} />} onClose={onClose}>
+          Aplicar Cupons de Desconto
+        </Modal.Header>
 
         <div className="p-5 border-b border-[var(--border)]">
           <div className="flex gap-2">
-            <input
-              className="flex-1 px-3 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 focus:border-[var(--color-primary)]"
+            <Input
               placeholder="Digite o código do cupom"
-              type="text"
               aria-label="Código do cupom"
             />
             <Button variant="primary" size="md">
@@ -141,15 +123,15 @@ export function CouponPopover({ isOpen, onClose }: CouponPopoverProps) {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-styled p-5 space-y-3">
+        <Modal.Body className="space-y-3">
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-2">
             Cupons disponíveis
           </p>
           {MOCK_COUPONS.map((c) => (
             <CouponCard key={c.code} coupon={c} />
           ))}
-        </div>
-      </div>
-    </>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal>
   );
 }

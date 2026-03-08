@@ -43,7 +43,7 @@ function CardImage({
 
   return (
     <div
-      className={`Card-Imagem relative overflow-hidden bg-zinc-100 dark:bg-zinc-800 ${aspectClasses[aspectRatio]}`}
+      className={`Card-Imagem relative overflow-hidden bg-[var(--background)] ${aspectClasses[aspectRatio]}`}
     >
       {badge && (
         <div className="absolute top-3 left-3 z-10">{badge}</div>
