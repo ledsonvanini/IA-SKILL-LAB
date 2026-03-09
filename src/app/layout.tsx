@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FontControlProvider } from "@/contexts/FontControlContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { CartSidebar } from "@/components/shared/CartSidebar";
 import "./globals.css";
@@ -47,14 +48,16 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider>
-          <FontControlProvider>
-            <CartProvider>
-              {children}
-              <CartSidebar />
-            </CartProvider>
-          </FontControlProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <FontControlProvider>
+              <CartProvider>
+                {children}
+                <CartSidebar />
+              </CartProvider>
+            </FontControlProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

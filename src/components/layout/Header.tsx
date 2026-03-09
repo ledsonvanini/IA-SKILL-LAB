@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Sun, Moon, Search, Tag } from "lucide-react";
+import { ShoppingCart, Sun, Moon, Search, Tag, User } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface HeaderProps {
   onShowCoupons: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 export function Header({ onShowCoupons }: HeaderProps) {
   const { resolvedTheme, toggleTheme } = useTheme();
   const { totalItems, toggleCart } = useCart();
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header className="Header-Público sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
@@ -61,6 +63,32 @@ export function Header({ onShowCoupons }: HeaderProps) {
               <Tag size={15} />
               <span className="hidden lg:inline">Cupons</span>
             </button>
+
+            {/* User Account / Auth */}
+            {isAuthenticated ? (
+              <Link
+                href={user?.role === "customer" ? "/area-do-cliente" : "/admin"}
+                className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm font-bold text-[var(--foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors rounded-lg"
+              >
+                <div className="w-6 h-6 rounded-full overflow-hidden bg-[var(--color-primary-light)] border border-[var(--border)] flex items-center justify-center">
+                  {user?.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={14} className="text-[var(--color-primary)]" />
+                  )}
+                </div>
+                <span className="hidden lg:inline truncate max-w-[120px]">{user?.name?.split(" ")[0]}</span>
+              </Link>
+            ) : (
+              <Link
+                href="/admin/login"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[var(--muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors rounded-lg"
+              >
+                <User size={16} />
+                <span className="hidden lg:inline">Entrar</span>
+              </Link>
+            )}
 
             {/* Theme */}
             <button

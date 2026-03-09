@@ -89,6 +89,10 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 - ❌ Pagamento online integrado (Mercado Pago, Stripe — Fase 3)
 - ❌ Sistema de logística/entrega automatizada
 
+### 1.4 Evolução Futura (Vision)
+- **White Label:** Estrutura preparada para ser comercializada como SaaS B2B, permitindo múltiplas instâncias/tenants com temas e domínios independentes.
+- **PWA (Progressive Web App):** Experiência mobile instalável off-line/cacheada.
+
 ---
 
 ## 2. Personas
@@ -197,7 +201,7 @@ Sistema deve permitir que usuários autenticados criem promoções com dados est
   - Pelo menos 1 imagem (max 5 imagens)
 - [ ] Campos opcionais:
   - Descrição (rich text, max 1000 caracteres)
-  - Tag "Promoção Destaque" (boolean)
+  - Tag "Promoção Destaque" (boolean) - Exibe no Topo da página
   - Seleção de unidade (dropdown, default: todas)
 - [ ] Upload de imagens:
   - Formatos aceitos: JPG, PNG, WebP
@@ -341,6 +345,25 @@ Sistema deve permitir arquivamento soft delete de promoções.
 - RN-013: Arquivamento muda status para 'archived'
 - RN-014: Promoções arquivadas não aparecem no link público
 - RN-015: Analytics de promoções arquivadas mantidos
+
+---
+
+#### RF-004b: Gerenciamento de Vitrine (Layout Admin)
+**Prioridade:** P1  
+**Sprint:** 3
+
+**Descrição:**  
+Sistema deve permitir que o Admin configure dinamicamente os elementos visuais das páginas públicas.
+
+**Critérios de Aceite:**
+- [ ] Interface para gerenciamento do "Hero Banner" (Imagens de slideshow da Home)
+- [ ] Interface para gerenciamento de "Destaques por Departamento" (Categorias em destaque na Home)
+- [ ] Interface para gerenciamento de Cupons Globais (Criar, Ativar, Desativar)
+- [ ] Definição de promoções "Top da Semana" (Selecionar quais promoções ganham badge de Destaque)
+
+**Regras de Negócio:**
+- RN-050: Hero banner aceita no máximo 5 imagens ativas simultaneamente.
+- RN-051: Cupons devem ter regras claras de expiração e podem ser ativados/desativados sem soft-delete.
 
 ---
 

@@ -13,8 +13,12 @@ import {
   LogOut,
   Menu,
   X,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -50,9 +54,11 @@ const SIDEBAR_ITEMS = [
 export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+    href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
   return (
     <div className="Página-Admin flex h-screen overflow-hidden">
@@ -145,12 +151,17 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             Configurações
           </Link>
           <div className="flex items-center gap-3 px-4 py-2">
-            <div className="w-10 h-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center text-[var(--color-primary)] font-bold text-sm">
-              AD
+            <div className="w-10 h-10 rounded-full bg-[var(--color-primary-light)] overflow-hidden flex items-center justify-center text-[var(--color-primary)] font-bold text-sm">
+              {user?.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0).toUpperCase() || "U"
+              )}
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold">Admin Meta21</span>
-              <button className="text-xs text-[var(--muted)] hover:text-[var(--color-primary)] text-left flex items-center gap-1">
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <span className="text-sm font-bold truncate">{user?.name}</span>
+              <button onClick={logout} className="text-xs text-[var(--muted)] hover:text-red-500 text-left flex items-center gap-1 transition-colors">
                 <LogOut size={10} />
                 Sair do sistema
               </button>
@@ -162,7 +173,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* ── Main Content ── */}
       <main className="Conteúdo-Admin flex-1 flex flex-col overflow-y-auto">
         {/* Top Header */}
-        <header className="Header-Admin flex items-center justify-between px-6 md:px-8 py-4 bg-[var(--surface)] border-b border-[var(--border)] sticky top-0 z-10">
+        <header className="Header-Admin flex items-center justify-between px-6 md:px-8 py-4 bg-[var(--background)] border-b border-[var(--border)] sticky top-0 z-10 transition-colors">
           <div className="flex items-center gap-4">
             <button
               className="md:hidden text-[var(--muted)]"
@@ -176,14 +187,21 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </h2>
           </div>
           <div className="flex items-center gap-3">
-            <div className="relative hidden sm:block">
-              <input
-                className="w-48 md:w-64 pl-10 pr-4 py-2 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)]/50 placeholder:text-[var(--muted)]"
-                placeholder="Buscar promoções..."
-                type="text"
-                aria-label="Buscar no painel"
-              />
-            </div>
+             {/* Theme Toggle */}
+             <button
+              onClick={toggleTheme}
+              className="p-2 text-[var(--muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors rounded-lg"
+              title={
+                resolvedTheme === "light" ? "Modo escuro" : "Modo claro"
+              }
+              aria-label={`Alternar para modo ${resolvedTheme === "light" ? "escuro" : "claro"}`}
+            >
+              {resolvedTheme === "light" ? (
+                <Moon size={18} />
+              ) : (
+                <Sun size={18} />
+              )}
+            </button>
           </div>
         </header>
 

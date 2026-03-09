@@ -10,6 +10,7 @@ status: Em Revisão
 arquiteto: Equipe META21
 stack_principal: Next.js 14 + Supabase + Vercel
 padrão_arquitetural: Clean Architecture + Modular Monolith
+visão_futura: White-label SaaS B2B + Progressive Web App (PWA)
 ```
 
 ## Sumário Executivo
@@ -306,6 +307,10 @@ src/
 │   ├── (admin)/
 │   │   ├── dashboard/
 │   │   │   └── page.tsx
+│   │   ├── ui-config/                 # Configuração de Vitrine Pública
+│   │   │   ├── hero/page.tsx          # Gerenciar slideshow
+│   │   │   ├── destaques/page.tsx     # Gerenciar destaques por categoria
+│   │   │   └── cupons/page.tsx        # Gerenciar cupons globais
 │   │   ├── promocoes/
 │   │   │   ├── page.tsx
 │   │   │   ├── nova/page.tsx
