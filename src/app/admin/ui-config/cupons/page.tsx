@@ -60,8 +60,8 @@ export default function CouponsConfigPage() {
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
           <div className="sm:col-span-2">
             <label className="text-xs font-semibold text-[var(--muted)] mb-1 block">Código (Ex: VERAO20)</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={newCode}
               onChange={(e) => setNewCode(e.target.value)}
               className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 outline-none focus:border-purple-500 transition-colors uppercase"
@@ -70,8 +70,8 @@ export default function CouponsConfigPage() {
           </div>
           <div className="sm:col-span-2">
             <label className="text-xs font-semibold text-[var(--muted)] mb-1 block">Desconto (Ex: 15% ou R$ 50)</label>
-             <input 
-              type="text" 
+            <input
+              type="text"
               value={newDiscount}
               onChange={(e) => setNewDiscount(e.target.value)}
               className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 outline-none focus:border-purple-500 transition-colors"
@@ -88,36 +88,36 @@ export default function CouponsConfigPage() {
 
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-[var(--border)] bg-[var(--background)] flex justify-between items-center">
-           <h3 className="font-bold text-[var(--muted)]">Cupons Ativos ({coupons.length})</h3>
+          <h3 className="font-bold text-[var(--muted)]">Cupons Ativos ({coupons.length})</h3>
         </div>
         <div className="divide-y divide-[var(--border)]">
           {coupons.map((coupon) => (
-             <div key={coupon.id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group hover:bg-[var(--background)] transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl dark:bg-purple-900/40 border border-purple-200 dark:border-purple-800/50 flex flex-col items-center justify-center text-purple-600 dark:text-purple-400">
-                     <span className="text-[10px] font-black uppercase tracking-wider">Cupom</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-black text-lg tracking-tight">{coupon.code}</h4>
-                      {coupon.isActive && <CheckCircle2 size={16} className="text-emerald-500" />}
-                    </div>
-                    <p className="text-[var(--muted)] text-sm">Oferece: <span className="font-bold text-[var(--foreground)]">{coupon.discount}</span> &bull; Validade: {coupon.validUntil}</p>
-                  </div>
+            <div key={coupon.id} className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group hover:bg-[var(--background)] transition-colors">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex flex-col items-center justify-center text-[var(--muted)] group-hover:bg-[var(--background)] transition-colors">
+                  <span className="text-[10px] font-bold uppercase tracking-wider"><Ticket size={20} className="text-purple-500" /></span>
                 </div>
-                
-                <Button variant="ghost" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30" onClick={() => handleRemove(coupon.id)}>
-                   <Trash size={18} />
-                   <span className="sm:hidden ml-2">Remover</span>
-                </Button>
-             </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-black text-lg tracking-tight">{coupon.code}</h4>
+                    {coupon.isActive && <CheckCircle2 size={16} className="text-emerald-500" />}
+                  </div>
+                  <p className="text-[var(--muted)] text-sm">Oferece: <span className="font-bold text-[var(--foreground)]">{coupon.discount}</span> &bull; Validade: {coupon.validUntil}</p>
+                </div>
+              </div>
+
+              <Button variant="ghost" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30" onClick={() => handleRemove(coupon.id)}>
+                <Trash size={18} />
+                <span className="sm:hidden ml-2">Remover</span>
+              </Button>
+            </div>
           ))}
 
           {coupons.length === 0 && (
-             <div className="p-12 text-center text-[var(--muted)]">
-                <Ticket size={48} className="mx-auto mb-4 opacity-50" />
-                <p>Nenhum cupom ativo no momento.</p>
-             </div>
+            <div className="p-12 text-center text-[var(--muted)]">
+              <Ticket size={48} className="mx-auto mb-4 opacity-50" />
+              <p>Nenhum cupom ativo no momento.</p>
+            </div>
           )}
         </div>
       </div>

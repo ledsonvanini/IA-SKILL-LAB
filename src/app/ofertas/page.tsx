@@ -58,6 +58,40 @@ export default function OfertasPage() {
         </div>
       </section>
 
+      {/* --- NOVA SEÇÃO: Ofertas Expirando em Breve --- */}
+      {allOffers.length > 0 && (
+        <section className="Seção-Expira-Breve max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl p-4 sm:p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
+                  <Timer size={18} className="animate-pulse" />
+                </div>
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-red-700 dark:text-red-400">
+                    Ofertas Expirando
+                  </h2>
+                  <p className="text-xs text-red-600/80 dark:text-red-400/80">Acabam nas próximas horas!</p>
+                </div>
+              </div>
+              <span className="text-red-600/60 dark:text-red-400/60 text-[10px] sm:text-xs flex items-center gap-1">
+                Arraste
+                <ArrowRight size={10} />
+              </span>
+            </div>
+
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+              {/* Pegando as 4 primeiras para simular "Expirando" */}
+              {allOffers.slice(0, 4).map((promo) => (
+                <div key={`exp-${promo.id}`} className="shrink-0 snap-start">
+                  <CompactOfferCard promo={promo} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {weeklyOffers.length > 0 && (
         <section className="Seção-Destaque-Scroll max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 sm:p-6">

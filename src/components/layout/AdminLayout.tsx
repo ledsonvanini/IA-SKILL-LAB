@@ -109,10 +109,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
                   transition-colors
-                  ${
-                    isActive(item.href)
-                      ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
-                      : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
+                  ${isActive(item.href)
+                    ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
+                    : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
                   }
                 `}
               >
@@ -127,10 +126,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     className={`
                       block pl-14 py-2 text-xs font-medium
                       transition-colors
-                      ${
-                        pathname === child.href
-                          ? "text-[var(--color-primary)]"
-                          : "text-[var(--muted)] hover:text-[var(--color-primary)]"
+                      ${pathname === child.href
+                        ? "text-[var(--color-primary)]"
+                        : "text-[var(--muted)] hover:text-[var(--color-primary)]"
                       }
                     `}
                   >
@@ -173,22 +171,27 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* ── Main Content ── */}
       <main className="Conteúdo-Admin flex-1 flex flex-col overflow-y-auto">
         {/* Top Header */}
-        <header className="Header-Admin flex items-center justify-between px-6 md:px-8 py-4 bg-[var(--background)] border-b border-[var(--border)] sticky top-0 z-10 transition-colors">
+        <header className="Header-Admin flex items-center justify-between px-6 md:px-8 py-4 bg-[var(--surface)] border-b border-[var(--border)] sticky top-0 z-10 transition-colors">
           <div className="flex items-center gap-4">
             <button
-              className="md:hidden text-[var(--muted)]"
+              className="md:hidden text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               onClick={() => setSidebarOpen(true)}
               aria-label="Abrir menu"
             >
               <Menu size={22} />
             </button>
-            <h2 className="text-lg md:text-xl font-bold tracking-tight">
+            <h2 className="text-lg md:text-xl font-bold tracking-tight text-[var(--foreground)]">
               Painel Administrativo
             </h2>
           </div>
-          <div className="flex items-center gap-3">
-             {/* Theme Toggle */}
-             <button
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block text-right border-r border-[var(--border)] pr-4">
+              <span className="text-[var(--muted)] text-sm font-medium">
+                Olá, <strong className="text-[var(--foreground)] font-bold">{user?.name?.split(" ")[0] || "Administrador"}</strong>
+              </span>
+            </div>
+            {/* Theme Toggle */}
+            <button
               onClick={toggleTheme}
               className="p-2 text-[var(--muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-colors rounded-lg"
               title={

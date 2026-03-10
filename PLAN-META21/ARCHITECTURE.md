@@ -5,11 +5,11 @@
 ```yaml
 versão: 1.0.0
 data_criação: 2026-03-06
-última_atualização: 2026-03-06
+última_atualização: 2026-03-09
 status: Em Revisão
 arquiteto: Equipe META21
-stack_principal: Next.js 14 + Supabase + Vercel
-padrão_arquitetural: Clean Architecture + Modular Monolith
+stack_principal: Next.js 14 + Supabase + Tailwind CSS + React Hook Form + Zod
+padrão_arquitetural: Clean Architecture + Modular Monolith + React Compound Components
 visão_futura: White-label SaaS B2B + Progressive Web App (PWA)
 ```
 
@@ -583,6 +583,33 @@ export class CreatePromotionUseCase {
   ) {}
 }
 ```
+
+---
+
+### 3.7 Formulários e Validação (React Hook Form + Zod + Compound Components)
+
+**Objetivo:** Garantir a performance de renderização em formulários complexos, manter forte tipagem ponta-a-ponta e promover o reuso de códigoUI limpo sem "prop drilling".
+
+**Implementação:**
+Combina-se o `React Hook Form` para o controle de estado não controlado (uncontrolled state) e o `Zod` para a validação do esquema e tipagem. Formulários gigantescos (como os de produto e promoções) são particionados em pedaços usando o **React Compound Component Pattern**.
+
+```tsx
+// Exemplo de FormRoot provendo contexto
+export function ProductFormRoot({ children }: { children: ReactNode }) {
+  const methods = useForm<ProductFormData>({
+    resolver: zodResolver(productSchema)
+  });
+  return <FormProvider {...methods}><form>{children}</form></FormProvider>;
+}
+
+// Subcomponentes consumindo o form via context
+export function ProductFormBasicInfo() {
+  const { register } = useFormContext<ProductFormData>();
+  return <Input {...register("name")} />;
+}
+```
+
+**Benefício:** Códigos extremamente limpos, fáceis de dar manutenção. Em vez de arquivos monstruosos com +300 linhas, temos múltiplos componentes menores, altamente escaláveis. Eliminam-se milhares de renderizações desnecessárias.
 
 ---
 

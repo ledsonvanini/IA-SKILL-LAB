@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import {
   Tag,
   ShoppingBag,
@@ -13,26 +12,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui";
 
 export default function AdminDashboardPage() {
-  const { user } = useAuth();
-
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Welcome Hero */}
-      <div className="bg-gradient-to-r from-[var(--color-primary)] to-red-800 rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10">
-          <h1 className="text-3xl md:text-4xl font-black mb-2 tracking-tight">
-            Olá, {user?.name?.split(" ")[0]}! 👋
-          </h1>
-          <p className="text-red-100 max-w-xl text-lg">
-            Bem-vindo ao painel de controle META21. Aqui você gerencia ofertas, cupons e a vitrine do seu e-commerce.
-          </p>
-        </div>
-        <Tag
-          size={240}
-          className="absolute -right-10 -bottom-20 text-white/10 rotate-12"
-        />
-      </div>
-
       {/* Quick Actions / Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1 */}
@@ -100,7 +81,7 @@ export default function AdminDashboardPage() {
             <AlertCircle size={24} />
             <h2 className="text-xl font-bold text-[var(--foreground)]">Atenção Necessária</h2>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex items-start justify-between p-4 bg-[var(--surface)] border-l-4 border-orange-500 rounded-lg shadow-sm">
               <div>
@@ -109,7 +90,7 @@ export default function AdminDashboardPage() {
               </div>
               <Button variant="secondary" size="sm">Rotacionar</Button>
             </div>
-            
+
             <div className="flex items-start justify-between p-4 bg-[var(--surface)] border-l-4 border-blue-500 rounded-lg shadow-sm">
               <div>
                 <h4 className="font-bold text-[var(--foreground)]">Banner Principal</h4>
@@ -117,7 +98,7 @@ export default function AdminDashboardPage() {
               </div>
               <Link href="/admin/ui-config/hero" passHref>
                 <Button variant="secondary" size="sm">Atualizar</Button>
-            </Link>
+              </Link>
             </div>
           </div>
         </div>
@@ -125,7 +106,7 @@ export default function AdminDashboardPage() {
         {/* Links Úteis */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 md:p-8">
           <h2 className="text-xl font-bold mb-6">Acesso Rápido</h2>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <Link href="/admin/promocoes/nova" className="flex flex-col items-center justify-center p-6 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all group shadow-sm hover:shadow-md">
               <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
@@ -133,7 +114,7 @@ export default function AdminDashboardPage() {
               </div>
               <span className="font-bold text-sm text-center text-[var(--foreground)] group-hover:text-[var(--color-primary)] transition-colors">Nova Oferta</span>
             </Link>
-            
+
             <Link href="/admin/ui-config/cupons" className="flex flex-col items-center justify-center p-6 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-purple-500 hover:text-purple-500 transition-all group shadow-sm hover:shadow-md">
               <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Ticket size={28} className="text-purple-500 dark:text-purple-400" />
@@ -143,7 +124,7 @@ export default function AdminDashboardPage() {
 
             <Link href="/admin/produtos" className="col-span-2 flex flex-col sm:flex-row items-center justify-between p-5 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-emerald-500 transition-all shadow-sm hover:shadow-md group">
               <div className="flex items-center gap-4">
-                 <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                   <ShoppingBag size={24} className="text-emerald-500 dark:text-emerald-400" />
                 </div>
                 <div className="text-left">
