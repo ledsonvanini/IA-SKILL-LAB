@@ -20,11 +20,11 @@ export default function UIConfigDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
+
         {/* Banner Principal */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl dark:bg-blue-900/30 flex items-center justify-center mb-6">
-            <ImageIcon size={24} className="text-blue-600 dark:text-blue-400" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 bg-[var(--background)] border border-[var(--border)]">
+            <ImageIcon size={24} className="text-[var(--foreground)]" />
           </div>
           <h2 className="text-lg font-bold mb-2">Banners Principais</h2>
           <p className="text-[var(--muted)] text-sm mb-8 flex-1">
@@ -39,8 +39,8 @@ export default function UIConfigDashboardPage() {
 
         {/* Categorias em Destaque */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl dark:bg-amber-900/30 flex items-center justify-center mb-6">
-            <Star size={24} className="text-amber-600 dark:text-amber-400" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 bg-[var(--background)] border border-[var(--border)]">
+            <Star size={24} className="text-[var(--foreground)]" />
           </div>
           <h2 className="text-lg font-bold mb-2">Categorias em Destaque</h2>
           <p className="text-[var(--muted)] text-sm mb-8 flex-1">
@@ -55,8 +55,8 @@ export default function UIConfigDashboardPage() {
 
         {/* Cupons Globais */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
-          <div className="w-12 h-12 rounded-xl dark:bg-purple-900/30 flex items-center justify-center mb-6">
-            <Ticket size={24} className="text-purple-600 dark:text-purple-400" />
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 bg-[var(--background)] border border-[var(--border)]">
+            <Ticket size={24} className="text-[var(--foreground)]" />
           </div>
           <h2 className="text-lg font-bold mb-2">Cupons de Desconto</h2>
           <p className="text-[var(--muted)] text-sm mb-8 flex-1">

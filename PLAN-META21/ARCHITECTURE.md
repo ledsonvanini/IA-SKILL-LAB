@@ -613,6 +613,20 @@ export function ProductFormBasicInfo() {
 
 ---
 
+### 3.8 UI Workflow (Ready for Backend)
+
+**Objetivo:** Garantir que a interface do usuário seja construída de forma robusta e completa antes da integração com o backend, evitando retrabalho.
+
+**Implementação:**
+Regras estabelecidas em `PLAN-META21/WORKFLOW-RULES.md`:
+
+1. **Fim do Mock Passivo:** Substituição de `alert()` por modais interativos, toasts e estados de loading reais (`isSubmitting`).
+2. **CRUDs Visuais Completos:** Implementação de gerenciamento de estado local para testar o fluxo de formulários e edição (ex: Configuração de Destaques) antes de conectar à API.
+3. **Tratamento de Exceções Visuais:** Uso sistemático de Empty States e Skeleton Loadings.
+4. **Overlays e Expansões:** Uso de Modais em tela cheia (ex: Relatório Completo) e painéis expansíveis (Filtros) em vez de links mortos.
+
+---
+
 ## 4. Modelo de Dados (Supabase Schema)
 
 ```sql

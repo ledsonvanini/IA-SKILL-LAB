@@ -1,6 +1,7 @@
 # PRD - Sistema de Gerenciamento de Promoções META21
 
 ## Metadados do Documento
+
 ```yaml
 versão: 1.0.0
 data_criação: 2026-03-06
@@ -20,9 +21,11 @@ ciclo_sprint: 2 semanas
 ## Sumarização Executiva das Features
 
 ### 🎯 Problema Central
+
 Rede de supermercados com 3 unidades possui processo manual ineficiente de comunicação de promoções via WhatsApp em múltiplos grupos, sem rastreabilidade, governança ou analytics de engajamento.
 
 ### 💡 Solução Proposta
+
 Sistema web centralizado com **timeline de promoções por período de validade** e link único compartilhável em redes sociais, permitindo gestão profissional de promoções com histórico completo (para admin/gerentes), landing page de promoções ativas (para clientes), evidência jurídica de publicação e analytics de curtidas para identificar produtos de maior interesse.
 
 ### 📊 Features Principais
@@ -52,6 +55,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 | Sistema de Comentários Moderados | P2 | Backlog | - |
 
 **Legenda de Prioridades:**
+
 - **P0:** Blocker (não lança MVP sem isso)
 - **P1:** Crítico (entrega logo após MVP)
 - **P2:** Importante (pode esperar Fase 2)
@@ -68,6 +72,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 ### 1.2 Objetivos de Negócio
 
 **Mensuráveis:**
+
 1. Reduzir tempo de publicação de promoções de ~2h para ~10min (90% redução)
 2. Eliminar criação de grupos WhatsApp (de infinitos para 0)
 3. Atingir 70% de taxa de clique (CTR) no link único nas primeiras 4 semanas
@@ -75,6 +80,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 5. Converter 10% dos visitantes da landing page em pedidos (Fase 2)
 
 **Qualitativos:**
+
 1. Melhorar percepção de profissionalismo da marca
 2. Reduzir atrito operacional da agência de publicidade
 3. Criar histórico auditável para compliance jurídico
@@ -90,6 +96,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 - ❌ Sistema de logística/entrega automatizada
 
 ### 1.4 Evolução Futura (Vision)
+
 - **White Label:** Estrutura preparada para ser comercializada como SaaS B2B, permitindo múltiplas instâncias/tenants com temas e domínios independentes.
 - **PWA (Progressive Web App):** Experiência mobile instalável off-line/cacheada.
 
@@ -100,21 +107,25 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 ### Persona 1: Paula — Gerente de Marketing da Agência
 
 **Demografia:**
+
 - Idade: 32 anos
 - Cargo: Coordenadora de Contas
 - Experiência: 8 anos em publicidade
 
 **Contexto:**
+
 - Gerencia 5 clientes simultaneamente
 - Pressão por entregas rápidas
 - Frustração com processos manuais
 
 **Objetivos:**
+
 - Publicar promoções em < 15 minutos
 - Interface bonita para impressionar cliente
 - Não precisar de suporte técnico
 
 **Dores:**
+
 - Criação infinita de grupos WhatsApp
 - Perda de histórico de promoções antigas
 - Dificuldade em mensurar ROI de campanhas
@@ -127,21 +138,25 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 ### Persona 2: Roberto — Gerente de Supermercado (Unidade Centro)
 
 **Demografia:**
+
 - Idade: 45 anos
 - Cargo: Gerente de Loja
 - Experiência: 20 anos no varejo
 
 **Contexto:**
+
 - Define promoções baseado em estoque parado
 - Precisa respaldo jurídico em caso de reclamações
 - Não tem tempo para usar sistemas complexos
 
 **Objetivos:**
+
 - Aprovar promoções rapidamente
 - Ter evidência de quando/o que foi publicado
 - Saber quais produtos geram mais interesse
 
 **Dores:**
+
 - Clientes reclamando de promoção "não encontrada"
 - Falta de controle sobre o que foi publicado
 - Não sabe se vale a pena investir em determinado produto
@@ -154,21 +169,25 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 ### Persona 3: Carla — Cliente Final (Usuária do Link)
 
 **Demografia:**
+
 - Idade: 38 anos
 - Ocupação: Professora
 - Localização: Bairro próximo à unidade
 
 **Contexto:**
+
 - Faz compras semanais
 - Planeja compras com base em promoções
 - Usa Instagram e WhatsApp diariamente
 
 **Objetivos:**
+
 - Ver promoções atuais de forma rápida
 - Comparar preços antes de ir ao mercado
 - Curtir produtos que tem interesse
 
 **Dores:**
+
 - Links quebrados em stories antigos
 - Grupos WhatsApp lotados de spam
 - Não encontra histórico de promoções
@@ -178,11 +197,18 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 
 ---
 
+## 2.5 Padrões de Qualidade de Interface
+
+A construção de todas as funcionalidades de UI/UX deve seguir as heurísticas "*Ready for Backend*" documentadas em `PLAN-META21/WORKFLOW-RULES.md`. É estritamente proibido o uso de mocks passivos (como `alert()`). Fluxos completos envolvendo **Modais, Painéis Expansíveis, Estados de Loading e Empty States** devem ser implementados no frontend antes de qualquer integração com o Supabase.
+
+---
+
 ## 3. Requisitos Funcionais Detalhados
 
 ### 3.1 Módulo: Gerenciamento de Promoções
 
 #### RF-001: Criar Promoção
+
 **Prioridade:** P0  
 **Sprint:** 1-2
 
@@ -190,6 +216,7 @@ Sistema web centralizado com **timeline de promoções por período de validade*
 Sistema deve permitir que usuários autenticados criem promoções com dados estruturados e imagens.
 
 **Critérios de Aceite:**
+
 - [ ] Formulário com validação em tempo real
 - [ ] Campos obrigatórios:
   - Título (max 255 caracteres)
@@ -213,6 +240,7 @@ Sistema deve permitir que usuários autenticados criem promoções com dados est
 - [ ] Botões: "Salvar Rascunho" | "Publicar"
 
 **Regras de Negócio:**
+
 - RN-001: Data válida ATÉ deve ser posterior a Data válida DE
 - RN-002: Preço POR deve ser menor que Preço DE
 - RN-003: Produtos novos são automaticamente cadastrados no banco
@@ -220,6 +248,7 @@ Sistema deve permitir que usuários autenticados criem promoções com dados est
 - RN-005: Título deve ser único dentro do mesmo período de validade
 
 **Fluxo Principal:**
+
 ```
 1. Usuário acessa /admin/promocoes/nova
 2. Sistema renderiza formulário vazio
@@ -236,6 +265,7 @@ Sistema deve permitir que usuários autenticados criem promoções com dados est
 ```
 
 **Fluxo Alternativo (Erro de Validação):**
+
 ```
 8a. Sistema detecta erro de validação
 8b. Sistema destaca campo com erro (border vermelho)
@@ -245,6 +275,7 @@ Sistema deve permitir que usuários autenticados criem promoções com dados est
 ```
 
 **Casos de Teste:**
+
 ```typescript
 // CT-001: Criação válida
 Input: {
@@ -270,6 +301,7 @@ Expected: Erro "Preço promocional deve ser menor que o original"
 ---
 
 #### RF-002: Listar Promoções (Admin)
+
 **Prioridade:** P0  
 **Sprint:** 2
 
@@ -279,10 +311,11 @@ Sistema deve exibir timeline de promoções com filtros por período (ano/mês e
 > **📌 Nota importante:** Esta funcionalidade é exclusiva para **Admin/Gerente**. Clientes finais NÃO têm acesso a navegação por período ou histórico — eles veem apenas promoções **ativas no momento** (RF-005).
 
 **Critérios de Aceite:**
-  - Status (rascunho, publicada, arquivada, expirada)
-  - Período de validade (vigente agora, próximo mês, mês específico, intervalo customizado)
-  - Unidade (todas, unidade específica)
-  - Produto (busca por nome)
+
+- Status (rascunho, publicada, arquivada, expirada)
+- Período de validade (vigente agora, próximo mês, mês específico, intervalo customizado)
+- Unidade (todas, unidade específica)
+- Produto (busca por nome)
 - [ ] Cada card de promoção exibe:
   - Imagem principal (thumbnail)
   - Título
@@ -296,6 +329,7 @@ Sistema deve exibir timeline de promoções com filtros por período (ano/mês e
 - [ ] Empty state para lista vazia
 
 **Regras de Negócio:**
+
 - RN-006: Promoções expiradas (validUntil < hoje) aparecem com badge "Expirada"
 - RN-007: Ordenação padrão: mais recentes primeiro
 - RN-008: Promoções destaque têm ícone de estrela
@@ -303,6 +337,7 @@ Sistema deve exibir timeline de promoções com filtros por período (ano/mês e
 ---
 
 #### RF-003: Editar Promoção
+
 **Prioridade:** P0  
 **Sprint:** 2
 
@@ -310,6 +345,7 @@ Sistema deve exibir timeline de promoções com filtros por período (ano/mês e
 Sistema deve permitir edição de promoções existentes com controle de versão.
 
 **Critérios de Aceite:**
+
 - [ ] Formulário pré-preenchido com dados atuais
 - [ ] Todas as validações de criação aplicadas
 - [ ] Imagens existentes exibidas com opção de remover
@@ -320,6 +356,7 @@ Sistema deve permitir edição de promoções existentes com controle de versão
 - [ ] Modal de confirmação se houver alterações não salvas ao sair
 
 **Regras de Negócio:**
+
 - RN-009: Não é possível editar promoções arquivadas
 - RN-010: Edição de promoção publicada gera novo registro de updated_at
 - RN-011: Alteração no período de validade requer confirmação explícita
@@ -328,6 +365,7 @@ Sistema deve permitir edição de promoções existentes com controle de versão
 ---
 
 #### RF-004: Arquivar Promoção
+
 **Prioridade:** P1  
 **Sprint:** 2
 
@@ -335,6 +373,7 @@ Sistema deve permitir edição de promoções existentes com controle de versão
 Sistema deve permitir arquivamento soft delete de promoções.
 
 **Critérios de Aceite:**
+
 - [ ] Botão "Arquivar" em lista e detalhes
 - [ ] Modal de confirmação: "Tem certeza? Esta ação pode ser revertida."
 - [ ] Promoção arquivada some da lista pública
@@ -342,6 +381,7 @@ Sistema deve permitir arquivamento soft delete de promoções.
 - [ ] Possibilidade de restaurar (muda status para draft)
 
 **Regras de Negócio:**
+
 - RN-013: Arquivamento muda status para 'archived'
 - RN-014: Promoções arquivadas não aparecem no link público
 - RN-015: Analytics de promoções arquivadas mantidos
@@ -349,6 +389,7 @@ Sistema deve permitir arquivamento soft delete de promoções.
 ---
 
 #### RF-004b: Gerenciamento de Vitrine (Layout Admin)
+
 **Prioridade:** P1  
 **Sprint:** 3
 
@@ -356,12 +397,14 @@ Sistema deve permitir arquivamento soft delete de promoções.
 Sistema deve permitir que o Admin configure dinamicamente os elementos visuais das páginas públicas.
 
 **Critérios de Aceite:**
+
 - [ ] Interface para gerenciamento do "Hero Banner" (Imagens de slideshow da Home)
 - [ ] Interface para gerenciamento de "Destaques por Departamento" (Categorias em destaque na Home)
 - [ ] Interface para gerenciamento de Cupons Globais (Criar, Ativar, Desativar)
 - [ ] Definição de promoções "Top da Semana" (Selecionar quais promoções ganham badge de Destaque)
 
 **Regras de Negócio:**
+
 - RN-050: Hero banner aceita no máximo 5 imagens ativas simultaneamente.
 - RN-051: Cupons devem ter regras claras de expiração e podem ser ativados/desativados sem soft-delete.
 
@@ -370,6 +413,7 @@ Sistema deve permitir que o Admin configure dinamicamente os elementos visuais d
 ### 3.2 Módulo: Páginas Públicas
 
 #### RF-005: Home Page Pública (Vitrine de Produtos)
+
 **Prioridade:** P0  
 **Sprint:** 3
 
@@ -377,6 +421,7 @@ Sistema deve permitir que o Admin configure dinamicamente os elementos visuais d
 Página principal pública exibindo o catálogo de produtos do supermercado. Funciona como vitrine digital — o cliente pode navegar por categorias, buscar produtos e adicioná-los ao carrinho. Produtos que possuem promoção ativa exibem badge **"Ver Oferta"** que leva o cliente à página **Ofertas da Semana**.
 
 **Critérios de Aceite:**
+
 - [ ] Grid de cards de produtos com:
   - Imagem principal
   - Nome do produto
@@ -395,12 +440,14 @@ Página principal pública exibindo o catálogo de produtos do supermercado. Fun
 - [ ] Loading lazy para imagens
 
 **Regras de Negócio:**
+
 - RN-016: Badge "Ver Oferta" aparece apenas em produtos com promoção ativa (`validFrom <= hoje <= validUntil`)
 - RN-017: Botão "Adicionar" adiciona ao carrinho e abre sidebar lateral
 - RN-018: Produtos sem estoque exibem badge "Indisponível" (sem botão Adicionar)
 - RN-065: Clicar em "Ver Oferta" redireciona para `/ofertas` com filtro no produto
 
 **Performance:**
+
 - LCP < 2.5s
 - CLS < 0.1
 - Mobile PageSpeed > 90
@@ -408,6 +455,7 @@ Página principal pública exibindo o catálogo de produtos do supermercado. Fun
 ---
 
 #### RF-005b: Ofertas da Semana (Landing de Promoções)
+
 **Prioridade:** P0  
 **Sprint:** 3
 
@@ -417,6 +465,7 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 > **📌 Importante:** Esta página exibe **apenas promoções com status 'published' e data vigente** (`validFrom <= hoje <= validUntil`). As datas devem ficar claras para o cliente — "Válido de DD/MM a DD/MM". Sem histórico, sem ofertas expiradas.
 
 **Critérios de Aceite:**
+
 - [ ] Header com título "🔥 Ofertas da Semana" + período visível (ex: "07/03 a 14/03")
 - [ ] Grid de cards de promoção com:
   - Imagem principal da promoção
@@ -439,6 +488,7 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 - [ ] Mobile-first
 
 **Regras de Negócio:**
+
 - RN-057: Apenas promoções com status 'published' aparecem
 - RN-058: Apenas promoções dentro do período de validade aparecem
 - RN-059: Cache de 5 minutos (ISR no Next.js)
@@ -446,6 +496,7 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 - RN-061: Ao terminar o período, oferta desaparece automaticamente (sem ação manual)
 
 **Performance:**
+
 - LCP < 2.5s
 - CLS < 0.1
 - Mobile PageSpeed > 90
@@ -453,6 +504,7 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 ---
 
 #### RF-005c: Compartilhar Oferta (Share)
+
 **Prioridade:** P0  
 **Sprint:** 3  
 **Status:** Implementada (2026-03-08)
@@ -461,6 +513,7 @@ Página dedicada que exibe **exclusivamente promoções ativas com período de v
 Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link amigável para enviar a seus contatos via WhatsApp, redes sociais ou qualquer canal. O sistema utiliza a **Web Share API** no mobile (integração nativa com apps) e fallback de **clipboard** no desktop.
 
 **URL Amigável:**
+
 - Padrão: `/ofertas?meta={slug-do-produto}`
 - Exemplo: `/ofertas?meta=arroz-agulhinha-5kg`
 - Slug derivado do campo `product.slug` (sem acentos, lowercase, separado por hífens)
@@ -468,6 +521,7 @@ Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link
 - Evolução futura: rota dinâmica `/ofertas/{slug}` quando houver página individual
 
 **Critérios de Aceite:**
+
 - [x] Botão com ícone `Share2` (Lucide) em `CompactOfferCard` e `FeaturedOfferCard`
 - [x] Mobile: aciona `navigator.share()` com título, texto e URL
 - [x] Desktop: copia URL para clipboard com feedback visual "Copiado!" (2s)
@@ -475,11 +529,13 @@ Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link
 - [x] Acessibilidade: `aria-label` descritivo por produto
 
 **Regras de Negócio:**
+
 - RN-066: URL usa slug do produto (campo `Product.slug`), sem IDs internos
 - RN-067: Texto de compartilhamento inclui nome do produto, % desconto e preço promocional
 - RN-068: Fallback gracioso — se Web Share API não disponível, usa clipboard; se clipboard falha, não gera erro
 
 **Arquivos de Implementação:**
+
 - `src/lib/share.ts` — Utilitário `shareOffer()` e `getOfferShareUrl()`
 - `src/modules/promotions/presentation/components/CompactOfferCard.tsx`
 - `src/modules/promotions/presentation/components/FeaturedOfferCard.tsx`
@@ -487,6 +543,7 @@ Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link
 ---
 
 #### RF-006: Curtir Promoção
+
 **Prioridade:** P0  
 **Sprint:** 4
 
@@ -494,6 +551,7 @@ Cada oferta possui um botão "Compartilhar" que permite ao cliente gerar um link
 Visitantes podem curtir promoções de forma anônima (sem login).
 
 **Critérios de Aceite:**
+
 - [ ] Botão de coração clicável em cada card
 - [ ] Animação de "like" ao clicar
 - [ ] Contador atualiza instantaneamente (optimistic UI)
@@ -503,12 +561,14 @@ Visitantes podem curtir promoções de forma anônima (sem login).
 - [ ] Feedback visual de estado (curtido vs não curtido)
 
 **Regras de Negócio:**
+
 - RN-019: Visitante anônimo identificado por sessionId (browser fingerprint)
 - RN-020: Se usuário tiver conta e estiver logado, usar userId
 - RN-021: Contador de likes atualizado em tempo real (Supabase Realtime)
 - RN-022: IP hashado armazenado para prevenção de fraude (LGPD compliant)
 
 **Fluxo Principal:**
+
 ```
 1. Usuário clica no botão de curtir
 2. Sistema verifica se já curtiu (sessionId ou userId)
@@ -525,6 +585,7 @@ Visitantes podem curtir promoções de forma anônima (sem login).
 ---
 
 #### RF-007: Comentários Moderados
+
 **Prioridade:** P2  
 **Sprint:** Backlog (pós-MVP)
 
@@ -532,6 +593,7 @@ Visitantes podem curtir promoções de forma anônima (sem login).
 Usuários registrados podem comentar em promoções, mas comentários passam por moderação.
 
 **Critérios de Aceite:**
+
 - [ ] Campo de comentário só visível para usuários logados
 - [ ] Comentários submetidos com status 'pending'
 - [ ] Moderador recebe notificação de novos comentários
@@ -543,6 +605,7 @@ Usuários registrados podem comentar em promoções, mas comentários passam por
 - [ ] Ordenação: mais recentes primeiro
 
 **Regras de Negócio:**
+
 - RN-023: Apenas usuários autenticados podem comentar
 - RN-024: Comentários pendentes não aparecem publicamente
 - RN-025: Texto do comentário max 500 caracteres
@@ -553,6 +616,7 @@ Usuários registrados podem comentar em promoções, mas comentários passam por
 ### 3.3 Módulo: Analytics
 
 #### RF-008: Dashboard de Engajamento
+
 **Prioridade:** P1  
 **Sprint:** 5
 
@@ -560,6 +624,7 @@ Usuários registrados podem comentar em promoções, mas comentários passam por
 Painel administrativo com métricas de engajamento de promoções.
 
 **Critérios de Aceite:**
+
 - [ ] KPIs principais (cards superiores):
   - Total de promoções ativas
   - Total de curtidas (semana atual)
@@ -579,6 +644,7 @@ Painel administrativo com métricas de engajamento de promoções.
   - Status
 
 **Regras de Negócio:**
+
 - RN-027: Taxa de engajamento = (curtidas / visualizações) * 100
 - RN-028: Dados atualizados a cada 1 hora (materialized view)
 - RN-029: Apenas promoções publicadas entram no ranking
@@ -586,6 +652,7 @@ Painel administrativo com métricas de engajamento de promoções.
 ---
 
 #### RF-009: Relatório Semanal Automatizado
+
 **Prioridade:** P1  
 **Sprint:** 6
 
@@ -593,6 +660,7 @@ Painel administrativo com métricas de engajamento de promoções.
 Sistema envia relatório semanal por email com insights de engajamento.
 
 **Critérios de Aceite:**
+
 - [ ] Email enviado toda segunda-feira 9h
 - [ ] Destinatários: gerentes de unidade + agência
 - [ ] Conteúdo:
@@ -605,6 +673,7 @@ Sistema envia relatório semanal por email com insights de engajamento.
 - [ ] Possibilidade de desinscrever (unsubscribe)
 
 **Regras de Negócio:**
+
 - RN-030: Relatório gerado via cron job (Vercel Cron ou Supabase Edge Function)
 - RN-031: Apenas envia se houver pelo menos 1 promoção ativa na semana
 - RN-032: Dados agregados de domingo a sábado
@@ -614,6 +683,7 @@ Sistema envia relatório semanal por email com insights de engajamento.
 ### 3.4 Módulo: Autenticação
 
 #### RF-010: Login com Google OAuth
+
 **Prioridade:** P0  
 **Sprint:** 1
 
@@ -621,6 +691,7 @@ Sistema envia relatório semanal por email com insights de engajamento.
 Usuários admin fazem login via Google OAuth (Supabase Auth).
 
 **Critérios de Aceite:**
+
 - [ ] Botão "Login com Google" na tela de login
 - [ ] Redirecionamento para fluxo OAuth do Google
 - [ ] Callback de sucesso salva sessão
@@ -630,6 +701,7 @@ Usuários admin fazem login via Google OAuth (Supabase Auth).
 - [ ] Logout limpa sessão e redireciona para home pública
 
 **Regras de Negócio:**
+
 - RN-033: Apenas emails do domínio @meta21.com.br podem fazer login (whitelist)
 - RN-034: Primeiro login cria usuário automaticamente no banco
 - RN-035: Sessão expira em 7 dias (refresh token)
@@ -639,6 +711,7 @@ Usuários admin fazem login via Google OAuth (Supabase Auth).
 ### 3.5 Módulo: Catálogo de Produtos (Admin CRUD)
 
 #### RF-011: Gerenciamento de Produtos (CRUD Completo)
+
 **Prioridade:** P0  
 **Sprint:** 2
 
@@ -646,6 +719,7 @@ Usuários admin fazem login via Google OAuth (Supabase Auth).
 Sistema permite o cadastro, edição, listagem e desativação de produtos pelo painel admin. O cadastro de produtos ocorre de duas formas: **incremental** (automaticamente quando usado em promoção) ou **importação em lote via CSV**.
 
 **Critérios de Aceite:**
+
 - [ ] Listagem de produtos com tabela:
   - Imagem, Nome, SKU, Categoria, Status (Ativo/Sem Estoque/Rascunho), Preço, Ações
 - [ ] Filtros: categoria, status, busca por nome/SKU
@@ -665,6 +739,7 @@ Sistema permite o cadastro, edição, listagem e desativação de produtos pelo 
 - [ ] Contador times_used (quantas vezes usado em promoções)
 
 **Regras de Negócio:**
+
 - RN-036: Nome normalizado usado para busca fuzzy
 - RN-037: Produtos nunca são deletados (soft delete)
 - RN-038: Campo times_used usado para ranking de sugestões
@@ -677,6 +752,7 @@ Sistema permite o cadastro, edição, listagem e desativação de produtos pelo 
 ---
 
 #### RF-012: Autocomplete de Produtos
+
 **Prioridade:** P0  
 **Sprint:** 2
 
@@ -684,6 +760,7 @@ Sistema permite o cadastro, edição, listagem e desativação de produtos pelo 
 Campo de produto no formulário de promoções sugere produtos já cadastrados.
 
 **Critérios de Aceite:**
+
 - [ ] Input com debounce de 300ms
 - [ ] Busca full-text no nome do produto
 - [ ] Ranking por times_used (mais usados primeiro)
@@ -693,6 +770,7 @@ Campo de produto no formulário de promoções sugere produtos já cadastrados.
 - [ ] Possibilidade de digitar nome novo (não obrigatório selecionar)
 
 **Regras de Negócio:**
+
 - RN-039: Busca case-insensitive
 - RN-040: Busca por similaridade (Levenshtein distance)
 - RN-041: Cache de sugestões por 24h (Redis futuro)
@@ -704,6 +782,7 @@ Campo de produto no formulário de promoções sugere produtos já cadastrados.
 > **📌 Nota:** Este módulo será implementado na Fase 2, após a consolidação do MVP de promoções. O objetivo é oferecer uma experiência simplificada de compra online — **não é um e-commerce completo** (sem integração com pagamento ou logística automatizada no momento). Funciona como uma "lista de compras" com possibilidade de finalização manual (WhatsApp / balcão).
 
 #### RF-013: Detalhes do Produto (Lightbox)
+
 **Prioridade:** P1  
 **Sprint:** 6
 
@@ -711,6 +790,7 @@ Campo de produto no formulário de promoções sugere produtos já cadastrados.
 Ao clicar em um produto (na landing page ou home), abre um lightbox/modal com detalhes completos do produto.
 
 **Critérios de Aceite:**
+
 - [ ] Modal/lightbox responsivo
 - [ ] Galeria de imagens com thumbnails laterais
 - [ ] Informações exibidas:
@@ -726,6 +806,7 @@ Ao clicar em um produto (na landing page ou home), abre um lightbox/modal com de
 - [ ] URL amigável compartilhável `/produtos/[slug]`
 
 **Regras de Negócio:**
+
 - RN-044: Produtos sem estoque mostram badge "Indisponível" sem botão de compra
 - RN-045: Preço "DE" é exibido riscado apenas quando há desconto ativo
 - RN-046: SEO meta tags geradas dinamicamente para compartilhamento social
@@ -733,6 +814,7 @@ Ao clicar em um produto (na landing page ou home), abre um lightbox/modal com de
 ---
 
 #### RF-014: Carrinho de Compras (Sidebar)
+
 **Prioridade:** P1  
 **Sprint:** 6-7
 
@@ -740,6 +822,7 @@ Ao clicar em um produto (na landing page ou home), abre um lightbox/modal com de
 Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar pedido" via WhatsApp ou retirada presencial.
 
 **Critérios de Aceite:**
+
 - [ ] Sidebar deslizante (abre pela direita)
 - [ ] Lista de itens com:
   - Imagem thumbnail
@@ -758,12 +841,14 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 - [ ] Persistência local (localStorage) para não perder itens ao navegar
 
 **Regras de Negócio:**
+
 - RN-047: Carrinho persiste via localStorage (visitante anônimo) ou servidor (logado)
 - RN-048: Quantidade máxima por item: 99 unidades
 - RN-049: Carrinho vazio exibe empty state com CTA para ver ofertas
 - RN-050: "Finalizar Compra" gera mensagem formatada no WhatsApp com itens, quantidades e total
 
 **Fluxo de Finalização (WhatsApp):**
+
 ```
 1. Cliente clica "Finalizar Compra"
 2. Sistema gera mensagem formatada:
@@ -780,6 +865,7 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 ---
 
 #### RF-015: Conta do Cliente (Minha Conta)
+
 **Prioridade:** P1  
 **Sprint:** 7
 
@@ -787,6 +873,7 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 Área logada para clientes com perfil pessoal, endereços e acesso ao histórico.
 
 **Critérios de Aceite:**
+
 - [ ] Login com Google OAuth (mesmo provider do admin, porém com role "customer")
 - [ ] Sidebar de navegação com:
   - Meus Pedidos (ativo por padrão)
@@ -798,6 +885,7 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 - [ ] Avatar vindo do Google OAuth
 
 **Regras de Negócio:**
+
 - RN-051: Clientes usam o mesmo OAuth mas role diferente (customer vs admin)
 - RN-052: Dados pessoais armazenados conforme LGPD (consentimento, direito ao esquecimento)
 - RN-053: Cliente pode excluir conta a qualquer momento
@@ -805,6 +893,7 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 ---
 
 #### RF-016: Histórico de Pedidos
+
 **Prioridade:** P1  
 **Sprint:** 8
 
@@ -812,6 +901,7 @@ Sidebar lateral que permite ao cliente montar sua lista de compras e "finalizar 
 Listagem de pedidos realizados pelo cliente com detalhes e status.
 
 **Critérios de Aceite:**
+
 - [ ] Tabela de pedidos com colunas:
   - ID do Pedido (ex: #MT-8742)
   - Data
@@ -824,6 +914,7 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 - [ ] Aviso sobre exclusão: "dados permanecem nos sistemas fiscais"
 
 **Regras de Negócio:**
+
 - RN-054: Status do pedido atualizado manualmente pelo admin (sem integração logística)
 - RN-055: Pedidos com mais de 1 ano são automaticamente arquivados
 - RN-056: "Replicar pedido" verifica disponibilidade atual dos produtos
@@ -835,15 +926,18 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.1 Performance
 
 **RNF-001: Tempo de Carregamento**
+
 - Landing page pública < 2.5s (LCP)
 - Dashboard admin < 3s (First Contentful Paint)
 - Operação CRUD < 500ms (p95)
 
 **RNF-002: Throughput**
+
 - Suportar 1000 requisições simultâneas (pico Black Friday)
 - Upload de imagens: 5 simultâneos por usuário
 
 **RNF-003: Otimização de Assets**
+
 - Imagens: WebP com fallback JPEG
 - Lazy loading para imagens fora da viewport
 - Bundle JS < 200KB (gzipped)
@@ -854,11 +948,13 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.2 Escalabilidade
 
 **RNF-004: Crescimento Horizontal**
+
 - Arquitetura stateless (serverless Vercel)
 - Cache distribuído (Cloudflare CDN)
 - Database read replicas (Supabase)
 
 **RNF-005: Limites de Recursos**
+
 - Storage: 10GB (free tier Supabase)
 - Database: 500MB (free tier)
 - Bandwidth: 100GB/mês (free tier Vercel)
@@ -868,17 +964,20 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.3 Segurança
 
 **RNF-006: Autenticação e Autorização**
+
 - OAuth 2.0 via Google (Supabase Auth)
 - Row Level Security (RLS) no Postgres
 - CORS configurado para domínios permitidos
 
 **RNF-007: Proteção de Dados (LGPD Compliance)**
+
 - IP addresses hashados (SHA-256)
 - Cookies com flag Secure + HttpOnly
 - Política de retenção: 2 anos para analytics
 - Right to be forgotten implementado
 
 **RNF-008: Segurança de Upload**
+
 - Validação de MIME type no backend
 - Antivírus scan (ClamAV futuro)
 - Content Security Policy headers
@@ -888,11 +987,13 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.4 Disponibilidade
 
 **RNF-009: Uptime**
+
 - SLA: 99.9% uptime (43 min downtime/mês)
 - Monitoramento: UptimeRobot + Vercel Analytics
 - Alertas: Slack + Email
 
 **RNF-010: Backup**
+
 - Backup automático diário (Supabase)
 - Point-in-time recovery (PITR) até 7 dias
 - Disaster recovery plan documentado
@@ -902,17 +1003,20 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.5 Usabilidade
 
 **RNF-011: Acessibilidade**
+
 - WCAG 2.1 Level AA compliance
 - Navegação por teclado completa
 - Screen reader friendly (ARIA labels)
 - Contraste mínimo 4.5:1
 
 **RNF-012: Responsividade**
+
 - Mobile-first design
 - Breakpoints: 320px, 768px, 1024px, 1440px
 - Touch targets mínimos: 44x44px
 
 **RNF-013: Internacionalização**
+
 - Idioma: Português do Brasil (pt-BR)
 - Moeda: Real (R$)
 - Formato de data: DD/MM/AAAA
@@ -923,12 +1027,14 @@ Listagem de pedidos realizados pelo cliente com detalhes e status.
 ### 4.6 Manutenibilidade
 
 **RNF-014: Qualidade de Código**
+
 - TypeScript strict mode
 - ESLint + Prettier configurados
 - Cobertura de testes > 80%
 - Architectural Decision Records (ADR)
 
 **RNF-015: Observabilidade**
+
 - Logging estruturado (Winston)
 - Metrics: Vercel Analytics + Posthog
 - Error tracking: Sentry
@@ -1009,6 +1115,7 @@ sequenceDiagram
 ### 6.1 Checklist de MVP
 
 **Funcionalidades:**
+
 - [ ] Timeline de promoções com histórico por período
 - [ ] Filtro de período (ano/mês) funcionando
 - [ ] Landing page exibindo APENAS promoções vigentes (válidas hoje)
@@ -1016,6 +1123,7 @@ sequenceDiagram
 - [ ] Metadados de auditoria (created_by, published_at) salvos
 
 **Qualidade:**
+
 - [ ] Cobertura de testes > 80%
 - [ ] Zero erros de TypeScript
 - [ ] Zero avisos críticos de ESLint
@@ -1023,6 +1131,7 @@ sequenceDiagram
 - [ ] Acessibilidade WCAG AA validada
 
 **Infraestrutura:**
+
 - [ ] Deploy em produção (Vercel)
 - [ ] Database migrada (Supabase)
 - [ ] Environment variables configuradas
@@ -1031,12 +1140,14 @@ sequenceDiagram
 - [ ] Monitoring configurado (Sentry + UptimeRobot)
 
 **Documentação:**
+
 - [ ] README.md atualizado
 - [ ] Manual de usuário para agência
 - [ ] Runbook de incidentes
 - [ ] ADRs documentados
 
 **Treinamento:**
+
 - [ ] Agência treinada (1 sessão de 2h)
 - [ ] Gerentes apresentados ao sistema (demo de 30min)
 - [ ] Vídeos tutoriais gravados
@@ -1046,17 +1157,20 @@ sequenceDiagram
 ### 6.2 Plano de Rollout
 
 **Fase 1: Soft Launch (Semana 1)**
+
 - Deploy em produção
 - Acesso apenas para agência (beta)
 - Criar 5 promoções de teste
 - Compartilhar link com grupo fechado de 50 clientes (WhatsApp)
 
 **Fase 2: Public Launch (Semana 2)**
+
 - Publicar link na bio do Instagram
 - Story anunciando novo sistema
 - Monitoramento intenso (24h)
 
 **Fase 3: Scale (Semana 3-4)**
+
 - Adicionar link no Facebook + WhatsApp Status
 - Análise de métricas de engajamento
 - Ajustes baseados em feedback
@@ -1097,33 +1211,41 @@ sequenceDiagram
 ## 8. Riscos e Mitigações
 
 ### Risco 1: Adoção Baixa pelos Clientes
+
 **Probabilidade:** Média  
 **Impacto:** Alto  
 **Mitigação:**
+
 - Campanha de divulgação agressiva (Instagram Ads)
 - Sorteio de vale-compras para primeiros 100 likes
 - QR Code nos corredores das lojas
 
 ### Risco 2: Storage Estourar Free Tier
+
 **Probabilidade:** Média  
 **Impacto:** Médio  
 **Mitigação:**
+
 - Compressão agressiva (quality 70 se > 1GB usado)
 - Migração para Cloudflare R2 se necessário
 - Limpeza de promoções antigas (> 6 meses)
 
 ### Risco 3: Performance Ruim em Pico (Black Friday)
+
 **Probabilidade:** Alta  
 **Impacto:** Alto  
 **Mitigação:**
+
 - Cache edge de 1 hora durante picos
 - CDN Cloudflare ativo
 - Load testing antes do evento (k6)
 
 ### Risco 4: Agência Não Conseguir Operar Sistema
+
 **Probabilidade:** Baixa  
 **Impacto:** Crítico  
 **Mitigação:**
+
 - Treinamento obrigatório antes do launch
 - Vídeos tutoriais curtos (< 3 min cada)
 - Suporte via WhatsApp durante primeira semana

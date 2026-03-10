@@ -1,6 +1,6 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "whatsapp";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "whatsapp" | "outline";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -14,6 +14,8 @@ const variantClasses: Record<ButtonVariant, string> = {
     "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] shadow-sm shadow-[var(--color-primary-shadow)] active:scale-[0.98]",
   secondary:
     "border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:bg-[var(--color-primary-light)] active:scale-[0.98]",
+  outline:
+    "border border-[var(--border)] bg-transparent text-[var(--foreground)] hover:bg-[var(--background)] active:scale-[0.98]",
   ghost:
     "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--color-primary-light)]",
   danger:

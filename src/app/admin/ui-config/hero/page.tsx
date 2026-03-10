@@ -5,25 +5,40 @@ import { ArrowLeft, Plus, Trash, Image as ImageIcon, Save, ArrowUp, ArrowDown } 
 import Link from "next/link";
 import { Button } from "@/components/ui";
 
-const INITIAL_BANNERS = [
-    { id: "1", url: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=500&fit=crop&crop=bottom" },
-    { id: "2", url: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=500&fit=crop" },
-    { id: "3", url: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=1400&h=500&fit=crop" },
-];
+const INITIAL_BANNERS = {
+    home: [
+        { id: "1", url: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=500&fit=crop&crop=bottom" },
+        { id: "2", url: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=500&fit=crop" },
+    ],
+    ofertas: [
+        { id: "3", url: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=1400&h=500&fit=crop" },
+    ]
+};
+
+type PageType = "home" | "ofertas";
 
 export default function HeroConfigPage() {
-    const [banners, setBanners] = useState(INITIAL_BANNERS);
+    const [activeTab, setActiveTab] = useState<PageType>("home");
+    const [bannersByPage, setBannersByPage] = useState(INITIAL_BANNERS);
     const [newUrl, setNewUrl] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const banners = bannersByPage[activeTab];
+
     const handleAdd = () => {
         if (!newUrl.trim()) return;
-        setBanners((prev) => [...prev, { id: Math.random().toString(), url: newUrl }]);
+        setBannersByPage((prev) => ({
+            ...prev,
+            [activeTab]: [...prev[activeTab], { id: Math.random().toString(), url: newUrl }]
+        }));
         setNewUrl("");
     };
 
     const handleRemove = (id: string) => {
-        setBanners((prev) => prev.filter((b) => b.id !== id));
+        setBannersByPage((prev) => ({
+            ...prev,
+            [activeTab]: prev[activeTab].filter((b) => b.id !== id)
+        }));
     };
 
     const moveUp = (index: number) => {
@@ -32,7 +47,7 @@ export default function HeroConfigPage() {
         const temp = newBanners[index - 1];
         newBanners[index - 1] = newBanners[index];
         newBanners[index] = temp;
-        setBanners(newBanners);
+        setBannersByPage((prev) => ({ ...prev, [activeTab]: newBanners }));
     };
 
     const moveDown = (index: number) => {
@@ -41,7 +56,7 @@ export default function HeroConfigPage() {
         const temp = newBanners[index + 1];
         newBanners[index + 1] = newBanners[index];
         newBanners[index] = temp;
-        setBanners(newBanners);
+        setBannersByPage((prev) => ({ ...prev, [activeTab]: newBanners }));
     };
 
     const handleSave = () => {
@@ -68,13 +83,29 @@ export default function HeroConfigPage() {
                             Configuração do Hero (Banners)
                         </h1>
                         <p className="text-sm text-[var(--muted)] mt-1">
-                            Gerencie as imagens de destaque que aparecem no topo da página inicial.
+                            Gerencie as imagens de destaque que aparecem no topo das páginas.
                         </p>
                     </div>
                 </div>
                 <Button onClick={handleSave} className="gap-2 px-6 shadow-sm shadow-[var(--color-primary)]/20" disabled={isSubmitting}>
                     {isSubmitting ? "Salvando..." : <><Save size={18} /> Salvar Alterações</>}
                 </Button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-[var(--border)] mb-6">
+                <button
+                    onClick={() => setActiveTab("home")}
+                    className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeTab === "home" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--muted)] hover:text-[var(--foreground)]"}`}
+                >
+                    Página Inicial (Home)
+                </button>
+                <button
+                    onClick={() => setActiveTab("ofertas")}
+                    className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${activeTab === "ofertas" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--muted)] hover:text-[var(--foreground)]"}`}
+                >
+                    Página de Ofertas
+                </button>
             </div>
 
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
@@ -86,12 +117,12 @@ export default function HeroConfigPage() {
                             type="url"
                             value={newUrl}
                             onChange={(e) => setNewUrl(e.target.value)}
-                            className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 transition-colors"
+                            className="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-4 py-2.5 outline-none focus:border-[var(--color-primary)] transition-colors"
                             placeholder="https://exemplo.com/imagem.jpg"
                         />
                     </div>
                     <div className="sm:w-32 flex items-end">
-                        <Button onClick={handleAdd} className="w-full bg-blue-600 hover:bg-blue-700 shadow-blue-500/20 shadow-lg text-white font-bold h-[46px]">
+                        <Button onClick={handleAdd} className="w-full bg-[var(--color-primary)] hover:opacity-90 shadow-[var(--color-primary)]/20 shadow-lg text-white font-bold h-[46px]">
                             <Plus size={18} className="mr-2" /> Adicionar
                         </Button>
                     </div>
@@ -101,7 +132,7 @@ export default function HeroConfigPage() {
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                 <div className="p-4 border-b border-[var(--border)] bg-[var(--background)]">
                     <h3 className="font-bold text-[var(--muted)]">Banners Ativos ({banners.length})</h3>
-                    <p className="text-xs text-[var(--muted)] mt-1">O primeiro banner da lista será o primeiro a ser exibido no site.</p>
+                    <p className="text-xs text-[var(--muted)] mt-1">O primeiro banner da lista será o primeiro a ser exibido no site para a aba selecionada.</p>
                 </div>
 
                 <div className="divide-y divide-[var(--border)]">
@@ -113,14 +144,14 @@ export default function HeroConfigPage() {
                                 <button
                                     onClick={() => moveUp(index)}
                                     disabled={index === 0}
-                                    className="p-1 rounded bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--background)] disabled:opacity-30 transition-colors"
+                                    className="p-1 rounded bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--background)] disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     <ArrowUp size={16} />
                                 </button>
                                 <button
                                     onClick={() => moveDown(index)}
                                     disabled={index === banners.length - 1}
-                                    className="p-1 rounded bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--background)] disabled:opacity-30 transition-colors"
+                                    className="p-1 rounded bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--background)] disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     <ArrowDown size={16} />
                                 </button>
@@ -150,7 +181,7 @@ export default function HeroConfigPage() {
                     {banners.length === 0 && (
                         <div className="p-12 text-center text-[var(--muted)]">
                             <ImageIcon size={48} className="mx-auto mb-4 opacity-30" />
-                            <p>Nenhum banner cadastrado. O site não exibirá o carrossel principal.</p>
+                            <p>Nenhum banner cadastrado para esta página.</p>
                         </div>
                     )}
                 </div>
@@ -158,3 +189,4 @@ export default function HeroConfigPage() {
         </div>
     );
 }
+
