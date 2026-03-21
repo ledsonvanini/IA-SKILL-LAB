@@ -15,10 +15,15 @@ import {
   X,
   Sun,
   Moon,
+  SendHorizontal,
+  CalendarDays,
+  ChevronRight,
+  ChevronDown,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useOfferStorage } from "@/modules/offer-submission/presentation/offer-submission/useOfferStorage";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -35,14 +40,29 @@ const SIDEBAR_ITEMS = [
     href: "/admin/promocoes",
     icon: Tag,
     children: [
+      { label: "Visão Geral", href: "/admin/promocoes", icon: Tag },
       { label: "Nova Promoção", href: "/admin/promocoes/nova", icon: PlusCircle },
       { label: "Histórico", href: "/admin/promocoes/historico", icon: History },
+    ],
+  },
+  {
+    label: "Envio de Ofertas",
+    href: "/admin/ofertas",
+    icon: SendHorizontal,
+    children: [
+      { label: "Painel Principal", href: "/admin/ofertas", icon: SendHorizontal },
+      { label: "Plan. Semanal", href: "/admin/ofertas/programacao-semanal", icon: CalendarDays },
+      { label: "Plan. Mensal", href: "/admin/ofertas/programacao-mensal", icon: CalendarDays },
     ],
   },
   {
     label: "Produtos",
     href: "/admin/produtos",
     icon: Package,
+    children: [
+      { label: "Relatório", href: "/admin/produtos", icon: Package },
+      { label: "Novo Produto", href: "/admin/produtos/novo", icon: PlusCircle },
+    ],
   },
   {
     label: "Análises",
@@ -51,11 +71,110 @@ const SIDEBAR_ITEMS = [
   },
 ] as const;
 
+function SidebarAccordion({
+  item,
+  pathname,
+  isActive,
+  hasNotification,
+  userRole,
+}: {
+  item: typeof SIDEBAR_ITEMS[number];
+  pathname: string;
+  isActive: (href: string) => boolean;
+  hasNotification: boolean;
+  userRole?: string;
+}) {
+  // Se estiver numa rota filha, começamos o accordion aberto
+  const isChildActive = "children" in item && item.children.some((c) => isActive(c.href) || pathname === c.href);
+  const [isOpen, setIsOpen] = useState(isChildActive);
+
+  if (!("children" in item)) {
+    return (
+      <Link
+        href={item.href}
+        className={`
+          flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
+          transition-colors
+          ${
+            isActive(item.href)
+              ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
+              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
+          }
+        `}
+      >
+        <item.icon size={18} />
+        <span className="flex-1">{item.label}</span>
+      </Link>
+    );
+  }
+
+  // Notificação específica de envio de ofertas
+  const showBadge = item.href === "/admin/ofertas" && hasNotification;
+
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`
+          w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium
+          transition-colors
+          ${
+            isChildActive && !isOpen
+              ? "bg-[var(--color-primary-light)]/50 text-[var(--color-primary)]"
+              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
+          }
+        `}
+      >
+        <div className="flex items-center gap-3">
+          <item.icon size={18} />
+          <span>{item.label}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {showBadge && (
+            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-black">
+              1
+            </span>
+          )}
+          {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        </div>
+      </button>
+
+      {isOpen && (
+        <div className="mt-1 space-y-1">
+          {item.children.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href}
+              className={`
+                block pl-11 py-2 text-xs font-medium rounded-lg
+                transition-colors
+                ${
+                  pathname === child.href
+                    ? "text-[var(--color-primary)] bg-[var(--color-primary-light)]/30"
+                    : "text-[var(--muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)]/20"
+                }
+              `}
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
+  const { hasAgencyNotification, hasManagerNotification } = useOfferStorage();
+  
+  const hasAnyOfferNotification = 
+    (user?.role === "admin" && hasAgencyNotification) || 
+    (user?.role === "manager" && hasManagerNotification);
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -101,41 +220,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-4 space-y-1 mt-2" aria-label="Menu administrativo">
+        <nav className="flex-1 px-4 space-y-1 mt-2 mb-4 overflow-y-auto" aria-label="Menu administrativo">
           {SIDEBAR_ITEMS.map((item) => (
-            <div key={item.href}>
-              <Link
-                href={item.href}
-                className={`
-                  flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
-                  transition-colors
-                  ${isActive(item.href)
-                    ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
-                    : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
-                  }
-                `}
-              >
-                <item.icon size={18} />
-                {item.label}
-              </Link>
-              {"children" in item &&
-                item.children?.map((child) => (
-                  <Link
-                    key={child.href}
-                    href={child.href}
-                    className={`
-                      block pl-14 py-2 text-xs font-medium
-                      transition-colors
-                      ${pathname === child.href
-                        ? "text-[var(--color-primary)]"
-                        : "text-[var(--muted)] hover:text-[var(--color-primary)]"
-                      }
-                    `}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
-            </div>
+            <SidebarAccordion
+              key={item.href}
+              item={item}
+              pathname={pathname}
+              isActive={isActive}
+              hasNotification={hasAnyOfferNotification}
+              userRole={user?.role}
+            />
           ))}
         </nav>
 

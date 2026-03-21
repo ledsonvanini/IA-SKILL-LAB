@@ -1,6 +1,8 @@
+import type { ElementType } from "react";
 import { Edit, Copy, Archive, CheckCircle, PackageX, FileText, XCircle, Trash2, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import { formatBRL } from "@/lib/format";
 
 export type ProductStatus = "active" | "out_of_stock" | "draft" | "archived";
 
@@ -27,16 +29,14 @@ interface ProductTableProps {
   onItemsPerPageChange?: (limit: number) => void;
 }
 
-const statusConfig: Record<ProductStatus, { label: string; icon: React.ElementType; colorClass: string }> = {
+const statusConfig: Record<ProductStatus, { label: string; icon: ElementType; colorClass: string }> = {
   active: { label: "Ativo", icon: CheckCircle, colorClass: "text-emerald-600 dark:text-emerald-400" },
   out_of_stock: { label: "Sem Estoque", icon: PackageX, colorClass: "text-orange-600 dark:text-orange-400" },
   draft: { label: "Rascunho", icon: FileText, colorClass: "text-gray-600 dark:text-gray-400" },
   archived: { label: "Arquivado", icon: Archive, colorClass: "text-red-600 dark:text-red-400" },
 };
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
-};
+
 
 export function ProductTable({
   data,
@@ -95,7 +95,7 @@ export function ProductTable({
                     <div className="text-xs text-[var(--muted)] line-clamp-1">SKU: {product.sku} • {product.category}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold">{formatCurrency(product.price)}</div>
+                    <div className="text-sm font-bold">{formatBRL(product.price)}</div>
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-[var(--background)] border border-[var(--border)] text-xs font-bold">

@@ -1,8 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "lucide-react";
 
 export type UserRole = "admin" | "manager" | "customer";
 
@@ -51,22 +50,18 @@ const MOCK_PROFILES: Record<UserRole, UserProfile> = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    // Check local storage for mock session on mount
-    const storedUser = localStorage.getItem("@meta21:mock_user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error("Failed to parse mock user", err);
-      }
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    // Lazy initializer: reads localStorage synchronously on first render (no useEffect needed)
+    if (typeof window === "undefined") return null;
+    try {
+      const stored = localStorage.getItem("@meta21:mock_user");
+      return stored ? (JSON.parse(stored) as UserProfile) : null;
+    } catch {
+      return null;
     }
-    setIsLoading(false);
-  }, []);
+  });
+  const [isLoading] = useState(false);
+  const router = useRouter();
 
   const loginAs = (role: UserRole) => {
     const profile = MOCK_PROFILES[role];

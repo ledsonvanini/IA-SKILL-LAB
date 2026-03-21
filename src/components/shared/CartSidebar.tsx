@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { getProductById } from "@/mocks/data";
 import { Button } from "@/components/ui";
 import { formatBRL } from "@/lib/format";
+import { buildWhatsAppUrl } from "@/config/constants";
 
 export function CartSidebar() {
   const {
@@ -137,7 +138,7 @@ export function CartSidebar() {
               </span>
             </div>
             <a
-              href="https://wa.me/5511987654321?text=Ol%C3%A1!%20Gostaria%20de%20finalizar%20meu%20pedido%20pelo%20Meta21."
+              href={buildWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
             >
