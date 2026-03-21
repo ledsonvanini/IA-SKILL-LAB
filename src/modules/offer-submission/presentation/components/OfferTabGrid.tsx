@@ -1,8 +1,9 @@
+"use client";
+
 import { useRef, useCallback, useState, useEffect, type KeyboardEvent, type ClipboardEvent } from "react";
-import { Trash2, Plus, ChevronUp, ChevronDown, ListX, ArrowUp, ArrowDown } from "lucide-react";
+import { Plus, ListX } from "lucide-react";
 import type { OfferRow, OfferColumnConfig, OfferType } from "@/mocks/types/offer-submission";
-import { formatBRL } from "@/lib/format";
-import { Button } from "@/components/ui";
+import { OfferTableRow } from "./OfferTableRow";
 
 interface OfferTabGridProps {
   type: OfferType;
@@ -50,18 +51,7 @@ export function OfferTabGrid({
   const resizingCol = useRef<string | null>(null);
   const startX = useRef<number>(0);
   const startWidth = useRef<number>(0);
-
-  // Persist column widths whenever they settle
   const persistTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const updateColWidth = (newWidths: Record<string, number>) => {
-    setColWidths(newWidths);
-    if (persistTimeoutRef.current) clearTimeout(persistTimeoutRef.current);
-    persistTimeoutRef.current = setTimeout(() => {
-      localStorage.setItem(storageKey, JSON.stringify(newWidths));
-    }, 500);
-  };
-
 
   const startResize = (e: React.MouseEvent, key: string, thRef: HTMLTableCellElement | null) => {
     if (!thRef) return;
@@ -98,7 +88,6 @@ export function OfferTabGrid({
     setColWidths((prev) => {
       const next = { ...prev };
       delete next[key];
-      // Salvar imediatamente no next tick sem o timer p/ o delete ser rápido
       localStorage.setItem(storageKey, JSON.stringify(next));
       return next;
     });
@@ -115,8 +104,8 @@ export function OfferTabGrid({
   };
 
   const handleRenameSubmit = (colKey: string) => {
-    if ((onRenameColumn as any) && renameValue.trim()) {
-      (onRenameColumn as any)(colKey, renameValue.trim());
+    if (onRenameColumn && renameValue.trim()) {
+      onRenameColumn(colKey, renameValue.trim());
     }
     setEditingCol(null);
   };
@@ -170,21 +159,13 @@ export function OfferTabGrid({
     [onPaste]
   );
 
-  const parseValue = (col: OfferColumnConfig, raw: string): string | number | null => {
-    if (col.type === "currency") {
-      const num = parseFloat(raw.replace(",", ".").replace(/[^\d.]/g, ""));
-      return isNaN(num) ? null : num;
-    }
-    return raw;
-  };
-
   return (
     <div className="Grade-Oferta overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)]">
-      <table ref={tableRef} className="w-full text-sm border-collapse">
+      <table ref={tableRef} className="Tabela-Planilha w-full text-sm border-collapse">
         {/* Header */}
         <thead>
           <tr className="bg-[var(--background)] border-b border-[var(--border)]">
-            <th className="px-3 py-2.5 text-left text-xs font-semibold text-[var(--muted)] border-r border-[var(--border)] w-12">#</th>
+            <th className="px-3 py-2.5 text-left text-xs font-semibold text-[var(--muted)] border-r border-[var(--border)] w-12 text-center">#</th>
             {columns.map((col) => {
               const customWidth = colWidths[col.key as string];
               return (
@@ -218,7 +199,7 @@ export function OfferTabGrid({
                   <div
                     onMouseDown={(e) => startResize(e, col.key as string, e.currentTarget.parentElement as HTMLTableCellElement)}
                     onDoubleClick={(e) => resetWidth(e, col.key as string)}
-                    className="absolute right-0 top-0 bottom-0 w-[5px] cursor-col-resize hover:bg-[var(--color-primary)] active:bg-[var(--color-primary)] transition-colors z-10"
+                    className="Alça-Resize absolute right-0 top-0 bottom-0 w-[5px] cursor-col-resize hover:bg-[var(--color-primary)] active:bg-[var(--color-primary)] transition-colors z-10"
                     title="Arrastar para redimensionar"
                   />
                 </th>
@@ -231,97 +212,20 @@ export function OfferTabGrid({
         {/* Body */}
         <tbody className="divide-y divide-[var(--border)]">
           {rows.map((row, rowIndex) => (
-            <tr
+            <OfferTableRow
               key={row.id}
-              className="group hover:bg-[var(--color-primary-light)]/20 transition-colors"
-            >
-              <td className="relative px-2 py-1.5 text-[10px] text-[var(--muted)] text-center select-none border-r border-[var(--border)] group/num min-w-[48px]">
-                <div className="group-hover/num:opacity-0 transition-opacity font-medium">
-                  {rowIndex + 1}
-                </div>
-                {!readOnly && (
-                  <div className="absolute inset-0 flex items-center justify-center gap-0.5 opacity-0 group-hover/num:opacity-100 transition-all bg-[var(--background)] px-1">
-                    <button
-                      onClick={() => onInsertRow(rowIndex)}
-                      className="p-0.5 hover:text-[var(--color-primary)] transition-colors"
-                      title="Inserir acima"
-                    >
-                      <Plus size={12} />
-                    </button>
-                    <div className="flex flex-col">
-                      <button
-                        onClick={() => onMoveRow(rowIndex, "up")}
-                        disabled={rowIndex === 0}
-                        className="p-0.5 hover:text-[var(--color-primary)] transition-colors disabled:opacity-30"
-                        title="Subir linha"
-                      >
-                        <ChevronUp size={12} />
-                      </button>
-                      <button
-                        onClick={() => onMoveRow(rowIndex, "down")}
-                        disabled={rowIndex === rows.length - 1}
-                        className="p-0.5 hover:text-[var(--color-primary)] transition-colors disabled:opacity-30"
-                        title="Descer linha"
-                      >
-                        <ChevronDown size={12} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </td>
-
-              {columns.map((col, colIndex) => (
-                <td key={col.key} className="px-1.5 py-1 border-r border-[var(--border)] last:border-r-0">
-                  {readOnly ? (
-                    <span className="px-3 py-1.5 block text-sm text-left">
-                      {col.type === "currency" && row[col.key] != null
-                        ? formatBRL(row[col.key] as number)
-                        : (row[col.key] as string) || "—"}
-                    </span>
-                  ) : (
-                    <input
-                      type={col.type === "currency" ? "number" : "text"}
-                      step={col.type === "currency" ? "0.01" : undefined}
-                      min={col.type === "currency" ? "0" : undefined}
-                      value={
-                        col.type === "currency"
-                          ? (row[col.key] ?? "") as string
-                          : (row[col.key] ?? "") as string
-                      }
-                      placeholder={col.placeholder}
-                      onChange={(e) =>
-                        onUpdateRow(row.id, col.key, parseValue(col, e.target.value))
-                      }
-                      onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
-                      onPaste={(e) => handlePaste(e, rowIndex)}
-                      className={`
-                        Célula-Planilha w-full px-3 py-1.5 rounded
-                        bg-transparent text-sm text-[var(--foreground)] text-left
-                        placeholder:text-[var(--muted)]/50
-                        border border-transparent
-                        focus:outline-none focus:border-[var(--color-primary)]/60
-                        focus:bg-[var(--color-primary-light)]/30
-                        transition-colors
-                      `}
-                    />
-                  )}
-                </td>
-              ))}
-
-              {!readOnly && (
-                <td className="px-1.5 py-1">
-                  <button
-                    type="button"
-                    onClick={() => onRemoveRow(row.id)}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-[var(--muted)] hover:text-[var(--color-danger)] transition-all rounded"
-                    aria-label="Remover linha"
-                    tabIndex={-1}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </td>
-              )}
-            </tr>
+              row={row}
+              rowIndex={rowIndex}
+              columns={columns}
+              readOnly={readOnly}
+              onUpdateRow={onUpdateRow}
+              onRemoveRow={onRemoveRow}
+              onInsertRow={onInsertRow}
+              onMoveRow={onMoveRow}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              rowsCount={rows.length}
+            />
           ))}
         </tbody>
       </table>

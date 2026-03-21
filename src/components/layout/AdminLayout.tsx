@@ -24,161 +24,10 @@ import {
 import { useState, type ReactNode, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useOfferStorage } from "@/modules/offer-submission/presentation/offer-submission/useOfferStorage";
+import { SidebarNav } from "./sidebar/SidebarNav";
 
 interface AdminLayoutProps {
   children: ReactNode;
-}
-
-const SIDEBAR_ITEMS = [
-  {
-    label: "Dashboard",
-    href: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Promoções",
-    href: "/admin/promocoes",
-    icon: Tag,
-    children: [
-      { label: "Nova Promoção", href: "/admin/promocoes/nova", icon: Tag },
-      { label: "Criar Cupom", href: "/admin/promocoes/criar-cupom", icon: Ticket },
-      { label: "Histórico", href: "/admin/promocoes/historico", icon: History },
-    ],
-  },
-  {
-    label: "Planejamento",
-    href: "/admin/planejamento",
-    icon: SendHorizontal,
-    children: [
-      { label: "Plan. Semanal", href: "/admin/planejamento/programacao-semanal", icon: CalendarDays },
-      { label: "Plan. Mensal", href: "/admin/planejamento/programacao-mensal", icon: CalendarDays },
-    ],
-  },
-  {
-    label: "Produtos",
-    href: "/admin/produtos",
-    icon: Package,
-    children: [
-      { label: "Novo Produto", href: "/admin/produtos/novo", icon: PlusCircle },
-    ],
-  },
-  {
-    label: "Análises",
-    href: "/admin/analises",
-    icon: BarChart3,
-  },
-] as const;
-
-function SidebarAccordion({
-  item,
-  pathname,
-  isActive,
-  hasNotification,
-  userRole,
-}: {
-  item: typeof SIDEBAR_ITEMS[number];
-  pathname: string;
-  isActive: (href: string) => boolean;
-  hasNotification: boolean;
-  userRole?: string;
-}) {
-  // Se estiver numa rota filha, começamos o accordion aberto
-  const isChildActive = "children" in item && item.children.some((c) => isActive(c.href) || pathname === c.href || pathname.startsWith(c.href));
-  const isParentActive = isActive(item.href);
-  const [isOpen, setIsOpen] = useState(isChildActive || isParentActive);
-
-  // Sync accordion expansion when navigating from outside (e.g. Dashboard)
-  useEffect(() => {
-    if (isChildActive || isParentActive) {
-      setIsOpen(true);
-    }
-  }, [isChildActive, isParentActive]);
-
-  if (!("children" in item)) {
-    return (
-      <Link
-        href={item.href}
-        className={`
-          flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium
-          transition-colors
-          ${
-            isActive(item.href)
-              ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
-              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
-          }
-        `}
-      >
-        <item.icon size={18} />
-        <span className="flex-1">{item.label}</span>
-      </Link>
-    );
-  }
-
-  // Notificação específica de envio de ofertas
-  const showBadge = item.href === "/admin/planejamento" && hasNotification;
-
-  return (
-    <div className="space-y-1">
-      <div
-        className={`
-          w-full flex items-center justify-between rounded-lg
-          transition-colors
-          ${
-            isParentActive || isChildActive
-              ? "bg-[var(--color-primary-light)]/50 text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
-              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)] border-l-4 border-transparent"
-          }
-        `}
-      >
-        <Link 
-          href={item.href}
-          className="flex items-center gap-3 px-4 py-3 flex-1 text-sm font-medium"
-        >
-          <item.icon size={18} />
-          <span>{item.label}</span>
-        </Link>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            setIsOpen(!isOpen);
-          }}
-          className="px-4 py-3 flex items-center gap-2 text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors"
-          title="Expandir/Recolher"
-        >
-          {showBadge && (
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[var(--color-danger)] text-white text-[10px] font-black">
-              !
-            </span>
-          )}
-          {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className="mt-1 space-y-1">
-          {item.children.map((child) => (
-            <Link
-              key={child.href}
-              href={child.href}
-              className={`
-                block pl-11 py-2 text-xs font-medium rounded-lg
-                transition-colors
-                ${
-                  pathname === child.href
-                    ? "text-[var(--color-primary)] bg-[var(--color-primary-light)]/30"
-                    : "text-[var(--muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)]/20"
-                }
-              `}
-            >
-              {child.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
@@ -186,14 +35,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const { resolvedTheme, toggleTheme } = useTheme();
-  const { hasAgencyNotification, hasManagerNotification } = useOfferStorage();
-  
-  const hasAnyOfferNotification = 
-    (user?.role === "admin" && hasAgencyNotification) || 
-    (user?.role === "manager" && hasManagerNotification);
-
-  const isActive = (href: string) =>
-    href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
   return (
     <div className="Página-Admin flex h-screen overflow-hidden">
@@ -236,18 +77,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-4 space-y-1 mt-2 mb-4 overflow-y-auto" aria-label="Menu administrativo">
-          {SIDEBAR_ITEMS.map((item) => (
-            <SidebarAccordion
-              key={item.href}
-              item={item}
-              pathname={pathname}
-              isActive={isActive}
-              hasNotification={hasAnyOfferNotification}
-              userRole={user?.role}
-            />
-          ))}
-        </nav>
+        <SidebarNav />
 
         {/* Footer sidebar */}
         <div className="p-4 border-t border-[var(--border)] space-y-2">

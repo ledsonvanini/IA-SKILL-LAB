@@ -1,14 +1,14 @@
-"use client";
-
 import { useMemo, useState } from "react";
-import { Send, RotateCcw, Save, FileUp, Table, Bell, XCircle } from "lucide-react";
+import { Send, RotateCcw, Save, FileUp, Table } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui";
 import { OfferTypeTabs } from "./OfferTypeTabs";
 import { OfferTabGrid } from "./OfferTabGrid";
 import { UploadDropzone } from "./UploadDropzone";
-import type { OfferType } from "@/mocks/types/offer-submission";
-import { OFFER_COLUMNS, OFFER_TYPE_ORDER, OFFER_TYPE_META } from "@/mocks/types/offer-submission";
+import { ManagerStatusBanner } from "./ManagerStatusBanner";
+import { OfferNotesSection } from "./OfferNotesSection";
+import type { OfferType, OfferRow, OfferColumnConfig } from "@/mocks/types/offer-submission";
+import { OFFER_COLUMNS, OFFER_TYPE_ORDER } from "@/mocks/types/offer-submission";
 import { useOfferStorage } from "../offer-submission/useOfferStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -42,7 +42,6 @@ export function ManagerView() {
   const tab = getTab(activeType);
   const columns = tab.columns || OFFER_COLUMNS[activeType];
   const isLocked = submission.status !== "draft";
-  const isSent = submission.status === "sent" || submission.status === "received";
 
   const handleSend = () => {
     sendToAgency(user?.name ?? "Gerente", user?.unitId ?? "");
@@ -75,33 +74,11 @@ export function ManagerView() {
 
   return (
     <div className="Tela-Gerente space-y-6">
-      {/* Receipt Notification Banner for Manager */}
-      {hasManagerNotification && submission.status === "received" && (
-        <div className="Banner-Recebimento flex items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-[var(--color-success)] bg-[var(--color-success-bg)] shadow-sm animate-in fade-in slide-in-from-top-4">
-          <div className="flex items-center gap-3 text-[var(--color-success)]">
-            <Bell size={20} className="hidden sm:block" />
-            <div className="text-sm font-semibold">
-              <p>
-                A agência confirmou o recebimento em <strong>{receivedDateStr}</strong>.
-              </p>
-              <p className="text-xs font-normal mt-0.5 opacity-90">
-                Recebido: {Object.keys(submission.tabs)
-                  .map(k => k as OfferType)
-                  .filter(k => submission.tabs[k]?.rows.some(r => r.descricao.trim()))
-                  .map(k => OFFER_TYPE_META[k].label)
-                  .join(", ") || "Sem dados enviados"}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={clearManagerNotification}
-            className="text-[var(--color-success)] hover:opacity-75 transition-opacity"
-            aria-label="Dispensar notificação"
-          >
-            <XCircle size={18} />
-          </button>
-        </div>
-      )}
+      <ManagerStatusBanner 
+        submission={submission}
+        hasManagerNotification={hasManagerNotification}
+        onClearNotification={clearManagerNotification}
+      />
 
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -212,10 +189,10 @@ export function ManagerView() {
               const newCols = columns.map(c => 
                 (c.key as string) === key ? { ...c, label: newLabel } : c
               );
-              setColumns(activeType, newCols);
+              setColumns(activeType, newCols as OfferColumnConfig[]);
             }}
             onPaste={(startIndex, tsv) =>
-              pasteRows(activeType, startIndex, tsv, columns.map((c) => c.key))
+              pasteRows(activeType, startIndex, tsv, columns.map((c) => c.key as keyof OfferRow))
             }
             onInsertRow={(index) => insertRow(activeType, index)}
             onMoveRow={(index, dir) => moveRow(activeType, index, dir)}
@@ -250,20 +227,11 @@ export function ManagerView() {
       )}
 
       {/* Notes */}
-      <div className="Seção-Observações bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 space-y-2">
-        <label htmlFor="offer-notes" className="text-sm font-semibold">
-          Observações gerais
-        </label>
-        <textarea
-          id="offer-notes"
-          rows={3}
-          value={submission.notes ?? ""}
-          onChange={(e) => updateNotes(e.target.value)}
-          disabled={isLocked}
-          placeholder="Ex: Confirmar disponibilidade de estoque antes de veicular..."
-          className="w-full bg-[var(--background)] text-sm text-[var(--foreground)] placeholder:text-[var(--muted)]/60 rounded-lg border border-[var(--border)] p-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 resize-none transition-colors disabled:opacity-50"
-        />
-      </div>
+      <OfferNotesSection 
+        notes={submission.notes ?? ""}
+        isLocked={isLocked}
+        onUpdateNotes={updateNotes}
+      />
 
       {/* Bottom Send */}
       {!isLocked && (

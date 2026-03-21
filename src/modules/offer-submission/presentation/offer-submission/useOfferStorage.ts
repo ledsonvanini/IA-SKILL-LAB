@@ -11,34 +11,14 @@ import type {
   OfferColumnConfig
 } from "@/mocks/types/offer-submission";
 import { OFFER_COLUMNS } from "@/mocks/types/offer-submission";
+import { generateId, createEmptyRow, createEmptySubmission } from "./offerHelpers";
 
 const STORAGE_KEY = "@meta21:offer_submission";
 const AGENCY_NOTIF_KEY = "@meta21:offer_notification"; // maintained key for backwards-compat config
 const MGR_NOTIF_KEY = "@meta21:manager_notification";
 
-function generateId() {
-  return Math.random().toString(36).slice(2, 10);
-}
-
-function emptyRow(): OfferRow {
-  return { id: generateId(), descricao: "", venda: null, promocao: null, limite: "" };
-}
-
-function emptySubmission(): OfferSubmission {
-  return {
-    id: generateId(),
-    tabs: {},
-    status: "draft",
-    submittedAt: null,
-    submittedBy: "",
-    unitId: "",
-    notes: "",
-    receivedAt: null,
-  };
-}
-
 export function useOfferStorage() {
-  const [submission, setSubmission] = useState<OfferSubmission>(emptySubmission);
+  const [submission, setSubmission] = useState<OfferSubmission>(createEmptySubmission);
   const [hasAgencyNotification, setHasAgencyNotification] = useState(false);
   const [hasManagerNotification, setHasManagerNotification] = useState(false);
 
@@ -69,7 +49,7 @@ export function useOfferStorage() {
         }
         return existing;
       }
-      return { type, period: "", columns: [...(OFFER_COLUMNS[type] || [])], rows: [emptyRow()] };
+      return { type, period: "", columns: [...(OFFER_COLUMNS[type] || [])], rows: [createEmptyRow()] };
     },
     [submission.tabs]
   );
@@ -90,7 +70,7 @@ export function useOfferStorage() {
   const addRow = useCallback(
     (type: OfferType) => {
       const tab = getTab(type);
-      updateTab(type, { ...tab, rows: [...tab.rows, emptyRow()] });
+      updateTab(type, { ...tab, rows: [...tab.rows, createEmptyRow()] });
     },
     [getTab, updateTab]
   );
@@ -100,7 +80,7 @@ export function useOfferStorage() {
     (type: OfferType, rowId: string) => {
       const tab = getTab(type);
       const rows = tab.rows.filter((r) => r.id !== rowId);
-      updateTab(type, { ...tab, rows: rows.length ? rows : [emptyRow()] });
+      updateTab(type, { ...tab, rows: rows.length ? rows : [createEmptyRow()] });
     },
     [getTab, updateTab]
   );
@@ -168,7 +148,7 @@ export function useOfferStorage() {
     (type: OfferType, index: number) => {
       const tab = getTab(type);
       const newRows = [...tab.rows];
-      newRows.splice(index, 0, emptyRow());
+      newRows.splice(index, 0, createEmptyRow());
       updateTab(type, { ...tab, rows: newRows });
     },
     [getTab, updateTab]
@@ -194,7 +174,7 @@ export function useOfferStorage() {
   const clearTab = useCallback(
     (type: OfferType) => {
       const tab = getTab(type);
-      updateTab(type, { ...tab, rows: [emptyRow()] });
+      updateTab(type, { ...tab, rows: [createEmptyRow()] });
       toast.success("Tabela limpa com sucesso.");
     },
     [getTab, updateTab]
@@ -272,7 +252,7 @@ export function useOfferStorage() {
 
   /** Resets to a fresh draft (manager only) */
   const resetDraft = useCallback(() => {
-    const fresh = emptySubmission();
+    const fresh = createEmptySubmission();
     persist(fresh);
     localStorage.removeItem(AGENCY_NOTIF_KEY);
     localStorage.removeItem(MGR_NOTIF_KEY);
