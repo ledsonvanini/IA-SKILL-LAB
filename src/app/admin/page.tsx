@@ -13,6 +13,7 @@ import {
   CalendarClock
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui";
 
 export default function AdminDashboardPage() {
@@ -24,7 +25,7 @@ export default function AdminDashboardPage() {
     setTimeout(() => {
       setIsSubmittingRotate(false);
       setRotateModalOpen(false);
-      alert(action === "archive" ? "Ofertas arquivadas com sucesso." : "Ofertas renovadas por +7 dias.");
+      toast.success(action === "archive" ? "Ofertas arquivadas com sucesso." : "Ofertas renovadas por +7 dias.");
     }, 1500);
   };
 
@@ -132,7 +133,7 @@ export default function AdminDashboardPage() {
                 <span className="font-bold text-sm text-center text-[var(--foreground)] group-hover:text-[var(--color-primary)] transition-colors">Nova Oferta</span>
               </Link>
 
-              <Link href="/admin/ui-config/cupons" className="flex flex-col items-center justify-center p-6 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-purple-500 hover:text-purple-500 transition-all group shadow-sm hover:shadow-md">
+              <Link href="/admin/promocoes/criar-cupom" className="flex flex-col items-center justify-center p-6 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-purple-500 hover:text-purple-500 transition-all group shadow-sm hover:shadow-md">
                 <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <Ticket size={28} className="text-purple-500 dark:text-purple-400" />
                 </div>

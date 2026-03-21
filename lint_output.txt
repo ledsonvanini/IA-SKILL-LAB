@@ -1,0 +1,168 @@
+
+> meta21@1.0.0 lint
+> eslint
+
+
+C:\dev\react\__META21\skills\skills\algorithmic-art\templates\generator_template.js
+   53:10  warning  'setup' is defined but never used             @typescript-eslint/no-unused-vars
+   70:10  warning  'draw' is defined but never used              @typescript-eslint/no-unused-vars
+   92:7   warning  'Entity' is defined but never used            @typescript-eslint/no-unused-vars
+  132:10  warning  'hexToRgb' is defined but never used          @typescript-eslint/no-unused-vars
+  141:10  warning  'colorFromPalette' is defined but never used  @typescript-eslint/no-unused-vars
+  146:10  warning  'mapRange' is defined but never used          @typescript-eslint/no-unused-vars
+  150:10  warning  'easeInOutCubic' is defined but never used    @typescript-eslint/no-unused-vars
+  155:10  warning  'wrapAround' is defined but never used        @typescript-eslint/no-unused-vars
+  165:10  warning  'updateParameter' is defined but never used   @typescript-eslint/no-unused-vars
+  171:10  warning  'regenerate' is defined but never used        @typescript-eslint/no-unused-vars
+  183:10  warning  'fadeBackground' is defined but never used    @typescript-eslint/no-unused-vars
+  190:10  warning  'getNoiseValue' is defined but never used     @typescript-eslint/no-unused-vars
+  195:10  warning  'vectorFromAngle' is defined but never used   @typescript-eslint/no-unused-vars
+  203:10  warning  'exportImage' is defined but never used       @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\app\admin\login\page.tsx
+  3:19  warning  'UserRole' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\app\admin\produtos\[id]\editar\page.tsx
+  8:43  warning  'params' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\app\admin\promocoes\historico\page.tsx
+  41:16  warning  'setData' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  49:26  warning  'id' is defined but never used                @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\app\admin\ui-config\cupons\page.tsx
+  29:11  warning  'isEditing' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\app\admin\ui-config\page.tsx
+  9:11  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\components\layout\AdminLayout.tsx
+  77:3  warning  'userRole' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\components\shared\CategoryCarousel.tsx
+  7:10  warning  'formatBRL' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\components\ui\Card.tsx
+  52:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\dev\react\__META21\src\contexts\AuthContext.tsx
+  3:47  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\contexts\CartContext.tsx
+  41:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\dev\react\__META21\src\contexts\CartContext.tsx:41:9
+  39 |       try {
+  40 |         const parsed = JSON.parse(stored);
+> 41 |         setItems(parsed.items ?? []);
+     |         ^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |       } catch {
+  43 |         /* ignore */
+  44 |       }  react-hooks/set-state-in-effect
+
+C:\dev\react\__META21\src\contexts\FontControlContext.tsx
+  64:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\dev\react\__META21\src\contexts\FontControlContext.tsx:64:5
+  62 |     const stored = localStorage.getItem(STORAGE_KEY) as FontSize | null;
+  63 |     const initial = stored ?? "medium";
+> 64 |     setFontSizeState(initial);
+     |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  65 |     applyFontSize(initial);
+  66 |   }, [applyFontSize]);
+  67 |  react-hooks/set-state-in-effect
+
+C:\dev\react\__META21\src\contexts\ThemeContext.tsx
+  60:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\dev\react\__META21\src\contexts\ThemeContext.tsx:60:5
+  58 |     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+  59 |     const initial = stored ?? "system";
+> 60 |     setThemeState(initial);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  61 |     applyTheme(initial);
+  62 |
+  63 |     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");  react-hooks/set-state-in-effect
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\components\ManagerView.tsx
+  42:9  warning  'isSent' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\components\OfferTabGrid.tsx
+    3:41  warning  'useEffect' is defined but never used                @typescript-eslint/no-unused-vars
+   52:9   warning  'updateColWidth' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  113:28  error    Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+  114:26  error    Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\components\ProgramacaoView.tsx
+    9:15  warning  'OfferRow' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+    9:25  warning  'OfferColumnConfig' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  131:32  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `setMonth`, but the source dependencies were [month, year, type]. Inferred different dependency than source.
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\components\ProgramacaoView.tsx:131:32
+  129 |
+  130 |   // Navigate months
+> 131 |   const navigate = useCallback((delta: number) => {
+      |                                ^^^^^^^^^^^^^^^^^^^^
+> 132 |     let m = month + delta;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 133 |     let y = year;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 134 |     if (m > 12) { m = 1; y++; }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 135 |     if (m < 1)  { m = 12; y--; }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 136 |     setMonth(m);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 137 |     setYear(y);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 138 |     setSchedule(loadSchedule(type, m, y));
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 139 |   }, [month, year, type]);
+      | ^^^^ Could not preserve existing manual memoization
+  140 |
+  141 |   const updateField = useCallback(
+  142 |     (id: string, field: keyof ProgramacaoRow, value: string | number) => {  react-hooks/preserve-manual-memoization
+  292:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  293:31  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\components\UploadDropzone.tsx
+  38:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\offer-submission\useOfferStorage.ts
+  66:32  error  Error: This value cannot be modified
+
+Modifying a value returned from 'useState()', which should not be modified directly. Use the setter function to update instead.
+
+C:\dev\react\__META21\src\modules\offer-submission\presentation\offer-submission\useOfferStorage.ts:66:32
+  64 |       const existing = submission.tabs[type];
+  65 |       if (existing) {
+> 66 |         if (!existing.columns) existing.columns = [...(OFFER_COLUMNS[type] || [])];
+     |                                ^^^^^^^^ `submission` cannot be modified
+  67 |         return existing;
+  68 |       }
+  69 |       return { type, period: "", columns: [...(OFFER_COLUMNS[type] || [])], rows: [emptyRow()] };  react-hooks/immutability
+
+C:\dev\react\__META21\src\modules\promotions\presentation\components\FeaturedOfferCard.tsx
+  5:17  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+
+Ô£û 40 problems (10 errors, 30 warnings)
+

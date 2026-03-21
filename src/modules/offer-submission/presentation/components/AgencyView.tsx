@@ -14,7 +14,7 @@ export function AgencyView() {
   const [activeType, setActiveType] = useState<OfferType>("tv");
 
   const tab = submission.tabs[activeType];
-  const columns = OFFER_COLUMNS[activeType];
+  const columns = tab?.columns || OFFER_COLUMNS[activeType];
   const isSent = submission.status === "sent";
   const isReceived = submission.status === "received";
   const hasData = submission.status !== "draft" && Object.keys(submission.tabs).length > 0;
@@ -124,6 +124,9 @@ export function AgencyView() {
               onUpdateRow={() => {}}
               onAddRow={() => {}}
               onRemoveRow={() => {}}
+              onInsertRow={() => {}}
+              onMoveRow={() => {}}
+              onClearTab={() => {}}
               onPaste={() => {}}
             />
           ) : (

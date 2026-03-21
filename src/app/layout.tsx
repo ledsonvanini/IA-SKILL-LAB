@@ -5,6 +5,7 @@ import { FontControlProvider } from "@/contexts/FontControlContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { CartSidebar } from "@/components/shared/CartSidebar";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -54,6 +55,7 @@ export default function RootLayout({
               <CartProvider>
                 {children}
                 <CartSidebar />
+                <Toaster position="top-right" />
               </CartProvider>
             </FontControlProvider>
           </ThemeProvider>

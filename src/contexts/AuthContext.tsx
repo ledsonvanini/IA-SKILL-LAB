@@ -50,18 +50,22 @@ const MOCK_PROFILES: Record<UserRole, UserProfile> = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    // Lazy initializer: reads localStorage synchronously on first render (no useEffect needed)
-    if (typeof window === "undefined") return null;
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
     try {
       const stored = localStorage.getItem("@meta21:mock_user");
-      return stored ? (JSON.parse(stored) as UserProfile) : null;
-    } catch {
-      return null;
+      if (stored) {
+        setUser(JSON.parse(stored) as UserProfile);
+      }
+    } catch (e) {
+      console.error("Failed to load user", e);
+    } finally {
+      setIsLoading(false);
     }
-  });
-  const [isLoading] = useState(false);
-  const router = useRouter();
+  }, []);
 
   const loginAs = (role: UserRole) => {
     const profile = MOCK_PROFILES[role];

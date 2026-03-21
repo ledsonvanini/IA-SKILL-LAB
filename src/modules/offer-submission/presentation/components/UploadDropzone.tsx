@@ -8,37 +8,74 @@ import { Button } from "@/components/ui";
 interface UploadDropzoneProps {
   type: OfferType;
   columns: OfferColumnConfig[];
-  onLoad: (rows: OfferRow[]) => void;
+  onLoad: (rows: OfferRow[], newColumns?: OfferColumnConfig[]) => void;
 }
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function tsvToRows(tsv: string, columns: OfferColumnConfig[], hasHeaderRow: boolean): OfferRow[] {
+function parseTsv(tsv: string, defaultColumns: OfferColumnConfig[], hasHeaderRow: boolean) {
   const lines = tsv.trim().split("\n").filter(Boolean);
-  const startLine = hasHeaderRow ? 1 : 0;
+  if (lines.length === 0) return { rows: [], columns: defaultColumns };
 
-  return lines.slice(startLine).map((line) => {
+  let mappedColumns = [...defaultColumns];
+  let startLine = 0;
+
+  if (hasHeaderRow && lines.length > 0) {
+    startLine = 1;
+    const headerCells = lines[0].split("\t").map((h) => h.trim());
+    mappedColumns = headerCells.map((headerText, i) => {
+      // Find matching column in defaults
+      const existing = defaultColumns.find((c) => 
+        c.label.toLowerCase() === headerText.toLowerCase() || String(c.key).toLowerCase() === headerText.toLowerCase()
+      );
+      if (existing) return existing;
+      
+      // Generate dynamic column
+      const newKey = `col_${i}_${generateId()}`;
+      return {
+        key: newKey as keyof OfferRow,
+        label: headerText || `Coluna ${i + 1}`,
+        type: "string",
+      };
+    });
+  }
+
+  const rows = lines.slice(startLine).map((line) => {
     const cells = line.split("\t");
-    const row: OfferRow = { id: generateId(), descricao: "", venda: null, promocao: null, limite: "" };
-    columns.forEach((col, i) => {
+    const row: OfferRow = { id: generateId(), descricao: "" };
+    mappedColumns.forEach((col, i) => {
       const val = cells[i]?.trim() ?? "";
       if (col.type === "currency") {
         const num = parseFloat(val.replace(",", ".").replace(/[^\d.]/g, ""));
-        (row as unknown as Record<string, unknown>)[col.key] = isNaN(num) ? null : num;
+        (row as Record<string, unknown>)[col.key] = isNaN(num) ? null : num;
       } else {
-        (row as unknown as Record<string, unknown>)[col.key] = val;
+        (row as Record<string, unknown>)[col.key] = val;
       }
     });
+
+    if (!row.descricao && mappedColumns.length > 0) {
+      row.descricao = String((row as Record<string, unknown>)[mappedColumns[0].key] || "");
+    }
     return row;
-  }).filter((r) => r.descricao);
+  });
+
+  // Filtrar linhas completamente vazias
+  const validRows = rows.filter((r) => 
+    mappedColumns.some(col => {
+      const v = (r as Record<string, unknown>)[col.key];
+      return v !== null && v !== undefined && String(v).trim() !== "";
+    })
+  );
+
+  return { rows: validRows, columns: mappedColumns };
 }
 
 export function UploadDropzone({ columns, onLoad }: UploadDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [preview, setPreview] = useState<OfferRow[] | null>(null);
+  const [preview, setPreview] = useState<{ rows: OfferRow[]; cols: OfferColumnConfig[] } | null>(null);
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
   const [hasHeaderRow, setHasHeaderRow] = useState(true);
@@ -50,20 +87,19 @@ export function UploadDropzone({ columns, onLoad }: UploadDropzoneProps) {
 
     if (name.endsWith(".csv")) {
       const text = await file.text();
-      // Brazilian CSV uses ";" as separator — normalise to tabs
       const normalised = text.replace(/;/g, "\t");
-      const rows = tsvToRows(normalised, columns, hasHeaderRow);
-      if (!rows.length) { setError("Nenhuma linha válida encontrada no arquivo."); return; }
-      setPreview(rows);
+      const result = parseTsv(normalised, columns, hasHeaderRow);
+      if (!result.rows.length) { setError("Nenhuma linha válida encontrada no arquivo."); return; }
+      setPreview({ rows: result.rows, cols: result.columns });
     } else if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
       const XLSX = await import("xlsx");
       const buffer = await file.arrayBuffer();
       const wb = XLSX.read(buffer, { type: "array" });
       const ws = wb.Sheets[wb.SheetNames[0]];
       const tsv = XLSX.utils.sheet_to_csv(ws, { FS: "\t" });
-      const rows = tsvToRows(tsv, columns, hasHeaderRow);
-      if (!rows.length) { setError("Nenhuma linha válida encontrada na planilha."); return; }
-      setPreview(rows);
+      const result = parseTsv(tsv, columns, hasHeaderRow);
+      if (!result.rows.length) { setError("Nenhuma linha válida encontrada na planilha."); return; }
+      setPreview({ rows: result.rows, cols: result.columns });
     } else {
       setError("Formato inválido. Use .csv, .xlsx ou .xls");
     }
@@ -83,9 +119,10 @@ export function UploadDropzone({ columns, onLoad }: UploadDropzoneProps) {
 
   const confirmImport = () => {
     if (preview) {
-      onLoad(preview);
+      onLoad(preview.rows, preview.cols);
       setPreview(null);
       setFileName("");
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
@@ -161,7 +198,7 @@ export function UploadDropzone({ columns, onLoad }: UploadDropzoneProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
               <FileSpreadsheet size={16} className="text-[var(--color-primary)]" />
-              {fileName} — <span className="text-[var(--muted)] font-normal">{preview.length} linhas detectadas</span>
+              {fileName} — <span className="text-[var(--muted)] font-normal">{preview.rows.length} linhas detectadas</span>
             </div>
             <button
               type="button"
@@ -178,27 +215,27 @@ export function UploadDropzone({ columns, onLoad }: UploadDropzoneProps) {
             <table className="w-full text-xs">
               <thead className="bg-[var(--background)] sticky top-0">
                 <tr>
-                  {columns.map((col) => (
-                    <th key={col.key} className="px-3 py-2 text-left font-semibold text-[var(--muted)]">
+                  {preview.cols.map((col) => (
+                    <th key={col.key as string} className="px-3 py-2 text-left font-semibold text-[var(--muted)]">
                       {col.label}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border)]">
-                {preview.slice(0, 8).map((row) => (
+                {preview.rows.slice(0, 8).map((row) => (
                   <tr key={row.id}>
-                    {columns.map((col) => (
-                      <td key={col.key} className="px-3 py-1.5 text-[var(--foreground)]">
-                        {row[col.key] != null ? String(row[col.key]) : "—"}
+                    {preview.cols.map((col) => (
+                      <td key={col.key as string} className="px-3 py-1.5 text-[var(--foreground)]">
+                        {row[col.key as string] != null ? String(row[col.key as string]) : "—"}
                       </td>
                     ))}
                   </tr>
                 ))}
-                {preview.length > 8 && (
+                {preview.rows.length > 8 && (
                   <tr>
-                    <td colSpan={columns.length} className="px-3 py-1.5 text-[var(--muted)] text-center">
-                      + {preview.length - 8} linhas adicionais
+                    <td colSpan={preview.cols.length} className="px-3 py-1.5 text-[var(--muted)] text-center">
+                      + {preview.rows.length - 8} linhas adicionais
                     </td>
                   </tr>
                 )}

@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import type {
   OfferSubmission,
   OfferType,
   OfferTabData,
   OfferRow,
   SubmissionStatus,
+  OfferColumnConfig
 } from "@/mocks/types/offer-submission";
+import { OFFER_COLUMNS } from "@/mocks/types/offer-submission";
 
 const STORAGE_KEY = "@meta21:offer_submission";
 const AGENCY_NOTIF_KEY = "@meta21:offer_notification"; // maintained key for backwards-compat config
@@ -59,7 +62,14 @@ export function useOfferStorage() {
   /** Gets (or creates) a tab's data */
   const getTab = useCallback(
     (type: OfferType): OfferTabData => {
-      return submission.tabs[type] ?? { type, period: "", rows: [emptyRow()] };
+      const existing = submission.tabs[type];
+      if (existing) {
+        if (!existing.columns) {
+          return { ...existing, columns: [...(OFFER_COLUMNS[type] || [])] };
+        }
+        return existing;
+      }
+      return { type, period: "", columns: [...(OFFER_COLUMNS[type] || [])], rows: [emptyRow()] };
     },
     [submission.tabs]
   );
@@ -146,9 +156,55 @@ export function useOfferStorage() {
 
   /** Replaces all rows of a tab (used after file upload) */
   const loadRows = useCallback(
-    (type: OfferType, rows: OfferRow[]) => {
+    (type: OfferType, rows: OfferRow[], newColumns?: OfferColumnConfig[]) => {
       const tab = getTab(type);
-      updateTab(type, { ...tab, rows });
+      updateTab(type, { ...tab, rows, columns: newColumns || tab.columns });
+    },
+    [getTab, updateTab]
+  );
+
+  /** Inserts an empty row at a specific index */
+  const insertRow = useCallback(
+    (type: OfferType, index: number) => {
+      const tab = getTab(type);
+      const newRows = [...tab.rows];
+      newRows.splice(index, 0, emptyRow());
+      updateTab(type, { ...tab, rows: newRows });
+    },
+    [getTab, updateTab]
+  );
+
+  /** Moves a row up or down */
+  const moveRow = useCallback(
+    (type: OfferType, index: number, direction: "up" | "down") => {
+      const tab = getTab(type);
+      const newRows = [...tab.rows];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      
+      if (targetIndex < 0 || targetIndex >= newRows.length) return;
+      
+      const [moved] = newRows.splice(index, 1);
+      newRows.splice(targetIndex, 0, moved);
+      updateTab(type, { ...tab, rows: newRows });
+    },
+    [getTab, updateTab]
+  );
+
+  /** Clears all rows from a tab (resets to one empty row) */
+  const clearTab = useCallback(
+    (type: OfferType) => {
+      const tab = getTab(type);
+      updateTab(type, { ...tab, rows: [emptyRow()] });
+      toast.success("Tabela limpa com sucesso.");
+    },
+    [getTab, updateTab]
+  );
+
+  /** Updates column definitions array (e.g. user renamed a column) */
+  const setColumns = useCallback(
+    (type: OfferType, columns: OfferColumnConfig[]) => {
+      const tab = getTab(type);
+      updateTab(type, { ...tab, columns });
     },
     [getTab, updateTab]
   );
@@ -231,8 +287,12 @@ export function useOfferStorage() {
     hasManagerNotification,
     getTab,
     updateTab,
+    setColumns,
     addRow,
     removeRow,
+    insertRow,
+    moveRow,
+    clearTab,
     updateRow,
     pasteRows,
     loadRows,

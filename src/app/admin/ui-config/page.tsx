@@ -62,7 +62,7 @@ export default function UIConfigDashboardPage() {
           <p className="text-[var(--muted)] text-sm mb-8 flex-1">
             Crie novos cupons de desconto, defina validade e veja os cupons ativos que são exibidos para todos os clientes.
           </p>
-          <Link href="/admin/ui-config/cupons" passHref>
+          <Link href="/admin/promocoes/criar-cupom" passHref>
             <Button variant="secondary" className="w-full gap-2 justify-between">
               Ver Cupons <MoveRight size={16} />
             </Button>

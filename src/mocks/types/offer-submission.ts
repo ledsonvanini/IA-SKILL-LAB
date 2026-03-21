@@ -99,6 +99,7 @@ export const OFFER_TYPE_ORDER: OfferType[] = [
 export interface OfferTabData {
   type: OfferType;
   period: string;    // "25/03 a 27/03"
+  columns: OfferColumnConfig[]; // <--- NEW (Dynamic columns)
   rows: OfferRow[];
 }
 

@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { PlusCircle, Trash2, ChevronLeft, ChevronRight, Send } from "lucide-react";
+import { PlusCircle, Trash2, ChevronLeft, ChevronRight, Send, FileUp, Table } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthContext";
+import { UploadDropzone } from "./UploadDropzone";
+import type { OfferRow, OfferColumnConfig } from "@/mocks/types/offer-submission";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -12,7 +15,6 @@ export type WeekDay = "Terça a Quinta" | "Sexta a Segunda" | "Terça a Domingo"
 
 export interface ProgramacaoRow {
   id: string;
-  round: number;          // Rodada (1, 2, 3, 4...)
   datas: string;          // "03, 04 e 05 de Março"
   diasSemana: WeekDay | string;
   material: string;       // Nome da campanha / material
@@ -37,8 +39,8 @@ function generateId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function emptyRow(round = 1): ProgramacaoRow {
-  return { id: generateId(), round, datas: "", diasSemana: "", material: "", dataEntrega: "" };
+function emptyRow(): ProgramacaoRow {
+  return { id: generateId(), datas: "", diasSemana: "", material: "", dataEntrega: "" };
 }
 
 function loadSchedule(type: ProgramacaoType, month: number, year: number): MonthSchedule {
@@ -46,7 +48,7 @@ function loadSchedule(type: ProgramacaoType, month: number, year: number): Month
     const raw = localStorage.getItem(`${getStorageKey(type)}_${year}_${month}`);
     if (raw) return JSON.parse(raw) as MonthSchedule;
   } catch { /* ignore */ }
-  return { month, year, rows: [emptyRow(1), emptyRow(1)], submittedAt: null, status: "draft" };
+  return { month, year, rows: [emptyRow(), emptyRow()], submittedAt: null, status: "draft" };
 }
 
 function saveSchedule(type: ProgramacaoType, schedule: MonthSchedule) {
@@ -72,7 +74,6 @@ const DIAS_OPTIONS: string[] = [
 ];
 
 const COLUMNS = [
-  { key: "round" as const,        label: "Reg.",             width: "w-12",  type: "number" },
   { key: "datas" as const,        label: "Datas de Viculação", width: "min-w-[200px]", type: "text" },
   { key: "diasSemana" as const,   label: "Dias da Semana",   width: "min-w-[180px]", type: "select" },
   { key: "material" as const,     label: "Título Material",  width: "min-w-[200px]", type: "text" },
@@ -93,7 +94,7 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
   const [schedule, setSchedule] = useState<MonthSchedule>(() => loadSchedule(type, now.getMonth() + 1, now.getFullYear()));
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [inputMode, setInputMode] = useState<"grid" | "upload">("grid");
 
   // Resize logic
   const [colWidths, setColWidths] = useState<Record<string, number>>({});
@@ -126,14 +127,21 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
 
   // Navigate months
   const navigate = useCallback((delta: number) => {
-    let m = month + delta;
-    let y = year;
-    if (m > 12) { m = 1; y++; }
-    if (m < 1)  { m = 12; y--; }
-    setMonth(m);
-    setYear(y);
-    setSchedule(loadSchedule(type, m, y));
-  }, [month, year, type]);
+    setMonth((prevM) => {
+      setYear((prevY) => {
+        let m = prevM + delta;
+        let y = prevY;
+        if (m > 12) { m = 1; y++; }
+        if (m < 1)  { m = 12; y--; }
+        setSchedule(loadSchedule(type, m, y));
+        return y;
+      });
+      let m = prevM + delta;
+      if (m > 12) m = 1;
+      if (m < 1) m = 12;
+      return m;
+    });
+  }, [type]);
 
   const updateField = useCallback(
     (id: string, field: keyof ProgramacaoRow, value: string | number) => {
@@ -148,15 +156,14 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
   );
 
   const addRow = useCallback(() => {
-    const lastRound = schedule.rows.at(-1)?.round ?? 1;
-    const updated = { ...schedule, rows: [...schedule.rows, emptyRow(lastRound)] };
+    const updated = { ...schedule, rows: [...schedule.rows, emptyRow()] };
     saveSchedule(type, updated);
     setSchedule(updated);
   }, [schedule, type]);
 
   const removeRow = useCallback((id: string) => {
     const rows = schedule.rows.filter((r) => r.id !== id);
-    const updated = { ...schedule, rows: rows.length ? rows : [emptyRow(1)] };
+    const updated = { ...schedule, rows: rows.length ? rows : [emptyRow()] };
     saveSchedule(type, updated);
     setSchedule(updated);
   }, [schedule, type]);
@@ -169,8 +176,9 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
     };
     saveSchedule(type, updated);
     setSchedule(updated);
-    setShowConfirm(false);
     localStorage.setItem(`@meta21:programacao_notification_${type}`, "true");
+    
+    toast.success("Planejamento enviado para a Agência!");
   }, [schedule, type]);
 
   const markReceived = useCallback(() => {
@@ -178,19 +186,12 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
     saveSchedule(type, updated);
     setSchedule(updated);
     localStorage.removeItem(`@meta21:programacao_notification_${type}`);
+    toast.success("Planejamento marcado como recebido.");
   }, [schedule, type]);
 
   const isSent = schedule.status === "sent";
   const isReceived = schedule.status === "received";
   const locked = isSent || isReadOnly;
-
-  // Group rows by round for visual banding
-  const roundColors: Record<number, string> = {
-    1: "bg-yellow-50/60 dark:bg-yellow-900/10",
-    2: "bg-sky-50/60 dark:bg-sky-900/10",
-    3: "bg-emerald-50/60 dark:bg-emerald-900/10",
-    4: "bg-rose-50/60 dark:bg-rose-900/10",
-  };
 
   const title = type === "weekly" ? "Planejamento Semanal" : "Planejamento Mensal";
 
@@ -215,7 +216,7 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
             </span>
           )}
           {!isReadOnly && !locked && (
-            <Button size="sm" onClick={() => setShowConfirm(true)}>
+            <Button size="sm" onClick={sendToAgency}>
               <Send size={14} />
               Enviar para Agência
             </Button>
@@ -251,28 +252,63 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
         </button>
       </div>
 
-      {/* Confirm Send Banner */}
-      {showConfirm && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-[var(--color-warning)] bg-[var(--color-warning-bg)]">
-          <p className="text-sm font-semibold text-[var(--color-warning)]">
-            Confirmar envio do planejamento de <strong>{MONTH_NAMES[month - 1]} {year}</strong>?
-          </p>
-          <div className="flex items-center gap-2">
-            <Button size="sm" onClick={sendToAgency}><Send size={13} /> Confirmar</Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)}>Cancelar</Button>
-          </div>
+      {/* Input Mode Toggle */}
+      {!locked && (
+        <div className="flex items-center gap-1 p-1 bg-[var(--background)] rounded-lg w-fit border border-[var(--border)]">
+          <button
+            type="button"
+            onClick={() => setInputMode("grid")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              inputMode === "grid"
+                ? "bg-[var(--surface)] text-[var(--foreground)] shadow-sm"
+                : "text-[var(--muted)] hover:text-[var(--foreground)]"
+            }`}
+          >
+            <Table size={13} />
+            Grade
+          </button>
+          <button
+            type="button"
+            onClick={() => setInputMode("upload")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              inputMode === "upload"
+                ? "bg-[var(--surface)] text-[var(--foreground)] shadow-sm"
+                : "text-[var(--muted)] hover:text-[var(--foreground)]"
+            }`}
+          >
+            <FileUp size={13} />
+            Importar arquivo
+          </button>
         </div>
       )}
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--muted)]">
-        <span className="font-semibold">Reg./Rodadas:</span>
-        {[1, 2, 3, 4].map((r) => (
-          <span key={r} className={`px-2 py-0.5 rounded font-bold ${roundColors[r]}`}>
-            R{r}
-          </span>
-        ))}
-      </div>
+      {/* Upload Zone */}
+      {!locked && inputMode === "upload" && (
+        <UploadDropzone
+          type={"tv" as const}
+          columns={COLUMNS as OfferColumnConfig[]}
+          onLoad={(uploadRows) => {
+            const newRows: ProgramacaoRow[] = uploadRows.map(r => ({
+              id: r.id,
+              datas: String(r.datas || ""),
+              diasSemana: String(r.diasSemana || "Terça a Quinta"),
+              material: String(r.material || r.descricao || ""),
+              dataEntrega: String(r.dataEntrega || "")
+            }));
+            const updated = { ...schedule, rows: newRows.length ? newRows : [emptyRow()] };
+            saveSchedule(type, updated);
+            setSchedule(updated);
+            setInputMode("grid");
+            toast.success("Dados importados com sucesso!");
+          }}
+        />
+      )}
+
+      {/* Legend Area if needed (Currently empty since removed) */}
+      {(locked || inputMode === "grid") && (
+        <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--muted)] min-h-[16px]">
+        </div>
+      )}
 
       {/* Table */}
       <div className="Tabela-Programação overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)]">
@@ -285,7 +321,7 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
                   <th
                     key={col.key as string}
                     style={customWidth ? { minWidth: customWidth, width: customWidth, maxWidth: customWidth } : {}}
-                    className={`relative px-3 py-3 text-left text-xs font-semibold text-[var(--muted)] ${customWidth ? "" : col.width}`}
+                    className={`relative px-3 py-3 text-left text-xs font-semibold text-[var(--muted)] border-r border-[var(--border)] last:border-r-0 ${customWidth ? "" : col.width}`}
                   >
                     {col.label}
                     <div
@@ -296,16 +332,15 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
                   </th>
                 );
               })}
-              {!locked && <th className="w-8" />}
+              {!locked && <th className="w-8 border-l border-[var(--border)]" />}
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border)]">
             {schedule.rows.map((row, idx) => {
-              const roundBg = roundColors[row.round] ?? "";
               return (
-                <tr key={row.id} className={`group transition-colors ${roundBg}`}>
+                <tr key={row.id} className="group transition-colors hover:bg-[var(--color-primary-light)]/20">
                   {COLUMNS.map((col) => (
-                    <td key={col.key} className="px-1.5 py-1">
+                    <td key={col.key} className="px-1.5 py-1 border-r border-[var(--border)] last:border-r-0">
                       {locked ? (
                         <span className="px-2 py-1.5 block text-sm">
                           {String(row[col.key] ?? "—")}
@@ -324,15 +359,6 @@ export function ProgramacaoView({ type }: ProgramacaoViewProps) {
                             Outro...
                           </option>
                         </select>
-                      ) : col.type === "number" ? (
-                        <input
-                          type="number"
-                          min={1}
-                          max={6}
-                          value={row.round}
-                          onChange={(e) => updateField(row.id, "round", Number(e.target.value))}
-                          className="Célula-Round w-full px-2 py-1.5 rounded bg-transparent text-sm font-bold text-center text-[var(--foreground)] border border-transparent focus:outline-none focus:border-[var(--color-primary)]/60 focus:bg-[var(--color-primary-light)]/30 transition-colors"
-                        />
                       ) : (
                         <input
                           type="text"

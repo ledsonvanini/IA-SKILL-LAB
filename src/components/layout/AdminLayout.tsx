@@ -17,10 +17,11 @@ import {
   Moon,
   SendHorizontal,
   CalendarDays,
+  Ticket,
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState, type ReactNode, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useOfferStorage } from "@/modules/offer-submission/presentation/offer-submission/useOfferStorage";
@@ -40,19 +41,18 @@ const SIDEBAR_ITEMS = [
     href: "/admin/promocoes",
     icon: Tag,
     children: [
-      { label: "Visão Geral", href: "/admin/promocoes", icon: Tag },
-      { label: "Nova Promoção", href: "/admin/promocoes/nova", icon: PlusCircle },
+      { label: "Nova Promoção", href: "/admin/promocoes/nova", icon: Tag },
+      { label: "Criar Cupom", href: "/admin/promocoes/criar-cupom", icon: Ticket },
       { label: "Histórico", href: "/admin/promocoes/historico", icon: History },
     ],
   },
   {
-    label: "Envio de Ofertas",
-    href: "/admin/ofertas",
+    label: "Planejamento",
+    href: "/admin/planejamento",
     icon: SendHorizontal,
     children: [
-      { label: "Painel Principal", href: "/admin/ofertas", icon: SendHorizontal },
-      { label: "Plan. Semanal", href: "/admin/ofertas/programacao-semanal", icon: CalendarDays },
-      { label: "Plan. Mensal", href: "/admin/ofertas/programacao-mensal", icon: CalendarDays },
+      { label: "Plan. Semanal", href: "/admin/planejamento/programacao-semanal", icon: CalendarDays },
+      { label: "Plan. Mensal", href: "/admin/planejamento/programacao-mensal", icon: CalendarDays },
     ],
   },
   {
@@ -60,7 +60,6 @@ const SIDEBAR_ITEMS = [
     href: "/admin/produtos",
     icon: Package,
     children: [
-      { label: "Relatório", href: "/admin/produtos", icon: Package },
       { label: "Novo Produto", href: "/admin/produtos/novo", icon: PlusCircle },
     ],
   },
@@ -85,8 +84,16 @@ function SidebarAccordion({
   userRole?: string;
 }) {
   // Se estiver numa rota filha, começamos o accordion aberto
-  const isChildActive = "children" in item && item.children.some((c) => isActive(c.href) || pathname === c.href);
-  const [isOpen, setIsOpen] = useState(isChildActive);
+  const isChildActive = "children" in item && item.children.some((c) => isActive(c.href) || pathname === c.href || pathname.startsWith(c.href));
+  const isParentActive = isActive(item.href);
+  const [isOpen, setIsOpen] = useState(isChildActive || isParentActive);
+
+  // Sync accordion expansion when navigating from outside (e.g. Dashboard)
+  useEffect(() => {
+    if (isChildActive || isParentActive) {
+      setIsOpen(true);
+    }
+  }, [isChildActive, isParentActive]);
 
   if (!("children" in item)) {
     return (
@@ -109,36 +116,45 @@ function SidebarAccordion({
   }
 
   // Notificação específica de envio de ofertas
-  const showBadge = item.href === "/admin/ofertas" && hasNotification;
+  const showBadge = item.href === "/admin/planejamento" && hasNotification;
 
   return (
     <div className="space-y-1">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
+      <div
         className={`
-          w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium
+          w-full flex items-center justify-between rounded-lg
           transition-colors
           ${
-            isChildActive && !isOpen
-              ? "bg-[var(--color-primary-light)]/50 text-[var(--color-primary)]"
-              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]"
+            isParentActive || isChildActive
+              ? "bg-[var(--color-primary-light)]/50 text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
+              : "text-[var(--muted)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)] border-l-4 border-transparent"
           }
         `}
       >
-        <div className="flex items-center gap-3">
+        <Link 
+          href={item.href}
+          className="flex items-center gap-3 px-4 py-3 flex-1 text-sm font-medium"
+        >
           <item.icon size={18} />
           <span>{item.label}</span>
-        </div>
-        <div className="flex items-center gap-2">
+        </Link>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }}
+          className="px-4 py-3 flex items-center gap-2 text-[var(--muted)] hover:text-[var(--color-primary)] transition-colors"
+          title="Expandir/Recolher"
+        >
           {showBadge && (
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-black">
-              1
+            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[var(--color-danger)] text-white text-[10px] font-black">
+              !
             </span>
           )}
           {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        </div>
-      </button>
+        </button>
+      </div>
 
       {isOpen && (
         <div className="mt-1 space-y-1">

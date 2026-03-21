@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { Send, RotateCcw, Save, FileUp, Table, Bell, XCircle } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui";
 import { OfferTypeTabs } from "./OfferTypeTabs";
 import { OfferTabGrid } from "./OfferTabGrid";
 import { UploadDropzone } from "./UploadDropzone";
 import type { OfferType } from "@/mocks/types/offer-submission";
-import { OFFER_COLUMNS, OFFER_TYPE_ORDER } from "@/mocks/types/offer-submission";
+import { OFFER_COLUMNS, OFFER_TYPE_ORDER, OFFER_TYPE_META } from "@/mocks/types/offer-submission";
 import { useOfferStorage } from "../offer-submission/useOfferStorage";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -22,6 +23,9 @@ export function ManagerView() {
     getTab,
     addRow,
     removeRow,
+    insertRow,
+    moveRow,
+    clearTab,
     updateRow,
     pasteRows,
     loadRows,
@@ -29,20 +33,20 @@ export function ManagerView() {
     updateNotes,
     sendToAgency,
     resetDraft,
+    setColumns,
   } = useOfferStorage();
 
   const [activeType, setActiveType] = useState<OfferType>("tv");
   const [inputMode, setInputMode] = useState<InputMode>("grid");
-  const [showConfirm, setShowConfirm] = useState(false);
-
+ 
   const tab = getTab(activeType);
-  const columns = OFFER_COLUMNS[activeType];
+  const columns = tab.columns || OFFER_COLUMNS[activeType];
   const isLocked = submission.status !== "draft";
   const isSent = submission.status === "sent" || submission.status === "received";
 
   const handleSend = () => {
     sendToAgency(user?.name ?? "Gerente", user?.unitId ?? "");
-    setShowConfirm(false);
+    toast.success("Ofertas enviadas com sucesso para a Agência!");
   };
 
   // Calcular badges (quais abas possuem dados preenchidos)
@@ -76,9 +80,18 @@ export function ManagerView() {
         <div className="Banner-Recebimento flex items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-[var(--color-success)] bg-[var(--color-success-bg)] shadow-sm animate-in fade-in slide-in-from-top-4">
           <div className="flex items-center gap-3 text-[var(--color-success)]">
             <Bell size={20} className="hidden sm:block" />
-            <p className="text-sm font-semibold">
-              A agência confirmou o recebimento das suas ofertas em <strong>{receivedDateStr}</strong>.
-            </p>
+            <div className="text-sm font-semibold">
+              <p>
+                A agência confirmou o recebimento em <strong>{receivedDateStr}</strong>.
+              </p>
+              <p className="text-xs font-normal mt-0.5 opacity-90">
+                Recebido: {Object.keys(submission.tabs)
+                  .map(k => k as OfferType)
+                  .filter(k => submission.tabs[k]?.rows.some(r => r.descricao.trim()))
+                  .map(k => OFFER_TYPE_META[k].label)
+                  .join(", ") || "Sem dados enviados"}
+              </p>
+            </div>
           </div>
           <button
             onClick={clearManagerNotification}
@@ -93,7 +106,7 @@ export function ManagerView() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight">Envio de Ofertas</h1>
+          <h1 className="text-2xl font-black tracking-tight">Planejamento</h1>
           <p className="text-sm text-[var(--muted)] mt-0.5">
             Cadastre os produtos por tipo de mídia e envie para a Agência revisar.
           </p>
@@ -122,7 +135,7 @@ export function ManagerView() {
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setShowConfirm(true)}
+              onClick={handleSend}
             >
               <Send size={14} />
               Enviar para Agência
@@ -130,24 +143,6 @@ export function ManagerView() {
           )}
         </div>
       </div>
-
-      {/* Send Confirmation Banner */}
-      {showConfirm && (
-        <div className="Banner-Confirmação flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-[var(--color-warning)] bg-[var(--color-warning-bg)]">
-          <p className="text-sm font-semibold text-[var(--color-warning)]">
-            Confirmar envio? A agência será notificada com os dados atuais de todas as abas.
-          </p>
-          <div className="flex items-center gap-2">
-            <Button size="sm" onClick={handleSend}>
-              <Send size={13} />
-              Confirmar
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowConfirm(false)}>
-              Cancelar
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Period Input */}
       <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
@@ -213,9 +208,18 @@ export function ManagerView() {
             onUpdateRow={(rowId, field, value) => updateRow(activeType, rowId, field, value)}
             onAddRow={() => addRow(activeType)}
             onRemoveRow={(rowId) => removeRow(activeType, rowId)}
+            onRenameColumn={(key, newLabel) => {
+              const newCols = columns.map(c => 
+                (c.key as string) === key ? { ...c, label: newLabel } : c
+              );
+              setColumns(activeType, newCols);
+            }}
             onPaste={(startIndex, tsv) =>
               pasteRows(activeType, startIndex, tsv, columns.map((c) => c.key))
             }
+            onInsertRow={(index) => insertRow(activeType, index)}
+            onMoveRow={(index, dir) => moveRow(activeType, index, dir)}
+            onClearTab={() => clearTab(activeType)}
           />
         </div>
       )}
@@ -224,7 +228,7 @@ export function ManagerView() {
         <UploadDropzone
           type={activeType}
           columns={columns}
-          onLoad={(rows) => { loadRows(activeType, rows); setInputMode("grid"); }}
+          onLoad={(rows, newCols) => { loadRows(activeType, rows, newCols); setInputMode("grid"); }}
         />
       )}
 
@@ -239,6 +243,9 @@ export function ManagerView() {
           onAddRow={() => {}}
           onRemoveRow={() => {}}
           onPaste={() => {}}
+          onInsertRow={() => {}}
+          onMoveRow={() => {}}
+          onClearTab={() => {}}
         />
       )}
 
@@ -265,7 +272,11 @@ export function ManagerView() {
             <Save size={15} />
             Rascunho salvo automaticamente
           </Button>
-          <Button variant="primary" size="md" onClick={() => setShowConfirm(true)}>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleSend}
+          >
             <Send size={15} />
             Enviar para Agência
           </Button>
